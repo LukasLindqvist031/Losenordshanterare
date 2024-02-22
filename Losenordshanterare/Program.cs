@@ -1,2 +1,12 @@
-﻿using Losenordshanterare;
-Console.WriteLine("Hello, World!");
+﻿namespace Losenordshanterare
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            FileService.WriteToFile("LUKAS");
+            FileService.Execute();
+            Console.ReadLine();
+        }
+    }
+}
