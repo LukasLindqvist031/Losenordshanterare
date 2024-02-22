@@ -5,10 +5,10 @@ namespace Losenordshanterare
 {
     internal class FileService
     {
-      string filePath = "test.txt";
 
         public static void Execute()
         {
+            string filePath = "test.txt";
             string fileContent = ReadFile(filePath);
             Console.WriteLine("File content:");
             Console.WriteLine(fileContent);
@@ -25,9 +25,12 @@ namespace Losenordshanterare
             {
                 Console.WriteLine($"An error occurred while reading the file: {ex.Message}");
                 return null; // Ändra null till något annat?
+            }
+        }
               
-        public void WriteToFile(string jsonContent)
+        public static void WriteToFile(string jsonContent)
         {
+            string filePath = "test.txt";
             try
             {
                 using (StreamWriter writer = new StreamWriter(filePath))

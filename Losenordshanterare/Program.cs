@@ -4,7 +4,8 @@
     {
         static void Main(string[] args)
         {
-            FileSerivce.Execute();
+            FileService.WriteToFile("LUKAS");
+            FileService.Execute();
             Console.ReadLine();
         }
     }
