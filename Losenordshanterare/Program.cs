@@ -1,2 +1,2 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using Losenordshanterare;
 Console.WriteLine("Hello, World!");
