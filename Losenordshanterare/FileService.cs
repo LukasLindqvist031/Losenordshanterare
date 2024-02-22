@@ -1,13 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace Losenordshanterare
 {
-    internal class FileSerivce
+    internal class FileService
     {
+        public void WriteToFile(string jsonContent)
+        {
+            string filePath = "test.txt";
 
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.WriteLine(jsonContent);
+                }
+                Console.WriteLine("Write successful");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
     }
 }
+
