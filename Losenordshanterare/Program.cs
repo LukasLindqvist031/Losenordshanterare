@@ -1,5 +1,11 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Losenordshanterare;
-
-var FileService = new FileService();
-FileService.WriteToFile("LOL");
+﻿namespace Losenordshanterare
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            FileSerivce.Execute();
+            Console.ReadLine();
+        }
+    }
+}
