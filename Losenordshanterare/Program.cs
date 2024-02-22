@@ -1,2 +1,11 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿namespace Losenordshanterare
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            FileSerivce.Execute();
+            Console.ReadLine();
+        }
+    }
+}
