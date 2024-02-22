@@ -1,2 +1,13 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿
+using Losenordshanterare;
+
+RecieveArgs(args);
+
+static void RecieveArgs(string[] args)
+{
+    if (args.Length > 0)
+    {
+        UserInput.ProcessCommandLine(args);
+    }
+}
+

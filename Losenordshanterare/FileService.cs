@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Losenordshanterare
 {
-    internal class FileSerivce
+    internal class FileService
     {
 
     }
