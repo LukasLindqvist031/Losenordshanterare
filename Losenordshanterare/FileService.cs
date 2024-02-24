@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Losenordshanterare
 {
-    internal class FileService
+    internal static class FileService
     {
 
         public static void Execute()
