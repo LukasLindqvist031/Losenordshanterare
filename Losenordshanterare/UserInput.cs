@@ -29,7 +29,7 @@ namespace Losenordshanterare
             switch (argument)
             {
                 case "init":
-                    FileService.WriteToFile()
+                    //FileService.WriteToFile();
                     break;
                 case "create":
                     Console.WriteLine("The command is create");
