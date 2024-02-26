@@ -10,7 +10,7 @@ namespace Losenordshanterare
         {
             string filePath = "test.txt";
             string fileContent = ReadFile(filePath);
-            Console.WriteLine("File content:");
+            Console.WriteLine("File contentent:");
             Console.WriteLine(fileContent);
         }
 
