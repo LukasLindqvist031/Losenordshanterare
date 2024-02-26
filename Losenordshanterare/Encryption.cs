@@ -18,7 +18,12 @@ namespace Losenordshanterare
     internal class Encryption
     {
         private readonly Crypto.Aes _aes;
-
+        
+        public Encryption()
+        {
+            _aes = Crypto.Aes.Create();
+        }
+      
         public byte[] Encrypt(string data)
         {
             byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(data);
@@ -33,15 +38,13 @@ namespace Losenordshanterare
             }
         }
 
-        public byte[] Decrypt(string data)
+        public byte[] Decrypt(byte[] byteArray)
         {
-            byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(data);
-
             using (MemoryStream ms = new MemoryStream())
             {
                 using (CryptoStream csDecrypt = new CryptoStream(ms, _aes.CreateDecryptor(), CryptoStreamMode.Write))
                 {
-                    csDecrypt.Write(byteArray, 0, data.Length);
+                    csDecrypt.Write(byteArray, 0, byteArray.Length);
                 }
                 return ms.ToArray();
             }
