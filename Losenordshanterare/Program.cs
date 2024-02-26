@@ -19,6 +19,7 @@ namespace Losenordshanterare
             //Match m = Regex.Match(generatedPass, pattern);
 
             //Console.WriteLine(m.Success);
+
         }
     }
 }

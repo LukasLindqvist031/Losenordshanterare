@@ -27,7 +27,7 @@ namespace Losenordshanterare
                 return null; // Ändra null till något annat?
             }
         }
-              
+      
         public static void WriteToFile(string jsonContent)
         {
             string filePath = "test.txt";
