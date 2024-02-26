@@ -3,14 +3,14 @@ using System.IO;
 
 namespace Losenordshanterare
 {
-    internal class FileService
+    internal static class FileService
     {
 
         public static void Execute()
         {
             string filePath = "test.txt";
             string fileContent = ReadFile(filePath);
-            Console.WriteLine("File contentent:");
+            Console.WriteLine("File content:");
             Console.WriteLine(fileContent);
         }
 
@@ -27,7 +27,7 @@ namespace Losenordshanterare
                 return null; // Ändra null till något annat?
             }
         }
-
+      
         public static void WriteToFile(string jsonContent)
         {
             string filePath = "test.txt";
