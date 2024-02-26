@@ -5,15 +5,6 @@ namespace Losenordshanterare
 {
     internal static class FileService
     {
-
-        public static void Execute()
-        {
-            string filePath = "test.txt";
-            string fileContent = ReadFile(filePath);
-            Console.WriteLine("File content:");
-            Console.WriteLine(fileContent);
-        }
-
         public static void CreateFile(string path)
         {
             try
@@ -26,25 +17,27 @@ namespace Losenordshanterare
             }
         }
 
-        private static string ReadFile(string path)
+        public static void ReadFile()
         {
+            string filePath = "test.txt";
             try
             {
-                string content = File.ReadAllText(path);
-                return content;
+                string fileContent = File.ReadAllText(filePath);
+                Console.WriteLine("File content:");
+                Console.WriteLine(fileContent);
             }
             catch (Exception ex)
             {
-                return $"An error occurred while reading the file: {ex.Message}";
+                Console.WriteLine($"An error occurred while reading the file: {ex.Message}");
             }
         }
-      
+
         public static void WriteToFile(string jsonContent)
         {
             string filePath = "test.txt";
             try
             {
-                using (StreamWriter writer = new StreamWriter(filePath))
+                using (StreamWriter writer = new StreamWriter(filePath, append: true))
                 {
                     writer.WriteLine(jsonContent);
                 }
