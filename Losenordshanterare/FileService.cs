@@ -38,7 +38,7 @@ namespace Losenordshanterare
                 return $"An error occurred while reading the file: {ex.Message}";
             }
         }
-              
+      
         public static void WriteToFile(string jsonContent)
         {
             string filePath = "test.txt";
