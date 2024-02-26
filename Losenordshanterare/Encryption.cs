@@ -17,6 +17,7 @@ namespace Losenordshanterare
 {
     internal class Encryption
     {
+        //Creates an Aes object
         private readonly Crypto.Aes _aes;
         
         public Encryption()
