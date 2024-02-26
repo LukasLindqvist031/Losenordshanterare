@@ -14,7 +14,7 @@ namespace Losenordshanterare
         {
             _client = client;
         }
-        public void Execute(string[] args)
+        private void Execute()
         {
             throw new NotImplementedException();
         }

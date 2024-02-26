@@ -21,7 +21,7 @@ namespace Losenordshanterare
             _secret = secret;
         }
 
-        public void Execute(string[] args)
+        private void Execute()
         {
             throw new NotImplementedException();
         }

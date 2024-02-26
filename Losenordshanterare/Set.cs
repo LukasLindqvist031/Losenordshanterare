@@ -21,7 +21,7 @@ namespace Losenordshanterare
             _property = property;
         }
 
-        public void Execute(string[] args)
+        private void Execute()
         {
             throw new NotImplementedException();
         }

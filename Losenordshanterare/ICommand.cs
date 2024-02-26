@@ -8,6 +8,6 @@ namespace Losenordshanterare
 {
     internal interface ICommand
     {
-        void Execute(string[] args);
+        private void Execute() { }
     }
 }

@@ -14,7 +14,19 @@ namespace Losenordshanterare
             Console.WriteLine(fileContent);
         }
 
-        static string ReadFile(string path)
+        public static void CreateFile(string path)
+        {
+            try
+            {
+                File.Create(path);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        private static string ReadFile(string path)
         {
             try
             {
@@ -23,8 +35,7 @@ namespace Losenordshanterare
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while reading the file: {ex.Message}");
-                return null; // Ändra null till något annat?
+                return $"An error occurred while reading the file: {ex.Message}";
             }
         }
               

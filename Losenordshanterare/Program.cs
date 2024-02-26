@@ -6,6 +6,12 @@ namespace Losenordshanterare
     {
         static void Main(string[] args)
         {
+            if(args.Length > 0) 
+            {
+                UserInput.ProcessCommandLine(args);
+            }
+
+            
             //FileService.WriteToFile("LUKAS");
             //FileService.Execute();
             //Console.ReadLine();

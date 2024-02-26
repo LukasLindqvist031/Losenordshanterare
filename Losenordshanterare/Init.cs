@@ -12,16 +12,26 @@ namespace Losenordshanterare
         private readonly string? _server;
         private readonly string? _password;
 
-        public Init(string? client, string? server, string? password)
+        public Init(string[] args)
         {
-            _client = client;
-            _server = server;
-            _password = password;
+            if (args.Length == 4)
+            {
+                _client = args[1];
+                _server = args[2];
+                _password = args[3];
+            }
+            else
+            {
+                Console.WriteLine("The number of arguments are invalid. Try again.");
+            }
+            Execute();
         }
 
-        public void Execute(string[] args)
+
+        private void Execute()
         {
-            throw new NotImplementedException();
+            FileService.CreateFile(_client);
+            FileService.CreateFile(_server);
         }
     }
 }

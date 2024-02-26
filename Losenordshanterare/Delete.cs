@@ -20,7 +20,7 @@ namespace Losenordshanterare
             _property = property;
             _password = password;
         }
-        public void Execute(string[] args)
+        private void Execute()
         {
             throw new NotImplementedException();
         }
