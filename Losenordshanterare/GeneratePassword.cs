@@ -8,20 +8,14 @@ using System.Threading.Tasks;
 
 namespace Losenordshanterare
 {
-    internal class GeneratePassword
+    internal static class GeneratePassword
     {
-        private readonly Random _random = new Random();
-        private readonly string? _password;
-
-        public GeneratePassword()
+        public static string? GenerateNewPassword()
         {
-            _password = GenerateNewPassword();
-        }
-
-        private string? GenerateNewPassword()
-        {
+            Random _random = new Random();
             const int passLength = 20;
             const string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
             char[] chars = new char[passLength];
 
             for (int i = 0; i < chars.Length; i++)
