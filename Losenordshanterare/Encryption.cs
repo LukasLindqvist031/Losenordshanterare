@@ -43,7 +43,7 @@ namespace Losenordshanterare
 
         public string Decrypt(byte[] cipherText)
         {
-            string plaintext = null;
+            string plaintext = string.Empty;
             using (MemoryStream ms = new MemoryStream(cipherText))
             {
                 using (CryptoStream csDecrypt = new CryptoStream(ms, _aes.CreateDecryptor(_aes.Key, _aes.IV), CryptoStreamMode.Read))
