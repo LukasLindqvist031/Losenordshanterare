@@ -10,16 +10,15 @@ namespace Losenordshanterare
     {
         public static void ProcessCommandLine(string[] args)
         {
-            string argument = args[0];
+            string arg = args[0];
 
-            if (IsValidArgument(argument))
+            if (string.IsNullOrWhiteSpace(arg))
             {
-                ArgumentSwitchCase(args);
+                throw new ArgumentException("Argument cannot be null or empty. Please try again.");
             }
-            else
-            {
-                Console.WriteLine("Argument cannot be null or empty. Please try again.");
-            }
+
+            ArgumentSwitchCase(args);
+
         }
 
         private static void ArgumentSwitchCase(string[] args)
@@ -30,6 +29,7 @@ namespace Losenordshanterare
             {
                 case "init":
                     Init init = new Init(args);
+                    init.Execute();
                     break;
                 case "create":
                     Console.WriteLine("The command is create");
@@ -51,8 +51,5 @@ namespace Losenordshanterare
                     break;
             }
         }
-
-
-        private static bool IsValidArgument(string arg) => !string.IsNullOrWhiteSpace(arg);
     }
 }
