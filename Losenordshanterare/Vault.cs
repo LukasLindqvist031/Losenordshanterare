@@ -2,7 +2,7 @@
 
 public class Vault
 {
-    private Dictionary<string, string> Vault = new Dictionary<string, string>;
+    private Dictionary<string, string> LogInDict = new Dictionary<string, string>;
     private VaultKey vaultKey;
     private string path;
 
@@ -18,7 +18,7 @@ public class Vault
             {
                 byte[] vaultBytes = File.ReadAllBytes(path);
 
-                if (vaultBytes.Lenght > 0)
+                if (vaultBytes.Length > 0)
                 {
                     //Funktionalitet för att låsa upp valvet 
                 }
