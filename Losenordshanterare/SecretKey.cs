@@ -7,21 +7,27 @@ using System.Threading.Tasks;
 
 namespace Losenordshanterare
 {
-    internal static class SecretKey
+    internal class SecretKey
     {
-        public static byte[] NewKey() => GenerateSecretKey();
+        private readonly byte[] _key;
+
+        public SecretKey()
+        {
+            _key  = GenerateSecretKey();
+        }
 
         private static byte[] GenerateSecretKey()
         {
-            const int arraySize = 20;
+            const int arraySize = 32;
             using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
                 byte[] bytes = new byte[arraySize];
                 rng.GetBytes(bytes);
                 return bytes;
             }
-
         }
+
+        public byte[] GetKey() => _key;
 
     }
 }

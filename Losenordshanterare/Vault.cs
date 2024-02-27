@@ -2,14 +2,12 @@
 
 public class Vault
 {
-    private Dictionary<string, string> LogInDict = new Dictionary<string, string>;
-    private VaultKey vaultKey;
+    private Dictionary<string, string> LogInDict = new Dictionary<string, string>();
     private string path;
 
-    public Vault(string path, VaultKey vaultkey)
+    public Vault(string path)
     {
         this.path = path;
-        this.vaultKey = vaultkey;
 
         if (!File.Exists(path))
         {

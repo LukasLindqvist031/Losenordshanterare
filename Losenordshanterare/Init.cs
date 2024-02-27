@@ -12,6 +12,8 @@ namespace Losenordshanterare
         private readonly string? _client;
         private readonly string? _server;
         private readonly string? _password;
+        private readonly SecretKey _secretKey;
+        private readonly VaultKey _vaultKey;
 
         public Init(string[] args)
         {
@@ -26,18 +28,11 @@ namespace Losenordshanterare
                 throw new ArgumentException("The number of arguments are invalid. Try again.");
             }
 
-            Execute();
+            _secretKey = new SecretKey();
+            _vaultKey = new VaultKey(_password, _secretKey);
+
         }
 
 
-        private void Execute()
-        {
-            if (_client != null && _server != null && _password != null)
-            {
-                FileService.CreateFile(_client);
-                FileService.CreateFile(_server);
-                _ = new VaultKey(_password);
-            }
-        }
     }
 }

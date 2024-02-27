@@ -10,22 +10,33 @@ namespace Losenordshanterare
 {
     internal class VaultKey
     {
-        private readonly Rfc2898DeriveBytes _key;
+        private readonly SecretKey _secretKey;
+        private readonly string _password;
+        private readonly byte[] _vaultKey;
 
-        public VaultKey(string input)
+        public VaultKey(string password, SecretKey secretKey)
         {
-            string password = input;
-            byte[] secretKey = SecretKey.NewKey();
-            _key = GenerateVaultKey(password, secretKey);
+            _password = password;
+            _secretKey = secretKey;
+            _vaultKey = GenerateVaultKey(_password, _secretKey);
         }
 
-        private Rfc2898DeriveBytes GenerateVaultKey(string password, byte[] secretKey)
+       
+        private byte[] GenerateVaultKey(string password, SecretKey secretKey)
         {
-            const int iteration = 1000;
+            const int iterations = 10000;
+            byte[] salt = secretKey.GetKey();
 
-            Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(password, secretKey, iteration, HashAlgorithmName.SHA256);
+            Rfc2898DeriveBytes rfc = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA256);
 
-            return key;
+            byte[] derivedKey = rfc.GetBytes(32);
+
+            return derivedKey;
         }
+
+        public byte[] GetKey() => _vaultKey;
+
+        
+        
     }
 }
