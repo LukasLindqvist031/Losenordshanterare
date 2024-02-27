@@ -63,21 +63,5 @@ namespace Losenordshanterare
             _aes.GenerateIV();
             return _aes.IV;
         }
-
-        //Use the _aes object to create a JSON format
-        public string createJson()
-        {
-            AesObject aesobject = new AesObject(_aes);
-            string content = JsonSerializer.Serialize(aesobject);
-            return content;
-        }
-
-        //Use the _aes object to deserialize the data
-        public void LoadFromJson(string data)
-        {
-            AesObject aesobject = JsonSerializer.Deserialize<AesObject>(data);
-            _aes.Key = aesobject.Key;
-            _aes.IV = aesobject.IV;
-        }
     }
 }
