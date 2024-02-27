@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,16 +23,21 @@ namespace Losenordshanterare
             }
             else
             {
-                Console.WriteLine("The number of arguments are invalid. Try again.");
+                throw new ArgumentException("The number of arguments are invalid. Try again.");
             }
+
             Execute();
         }
 
 
         private void Execute()
         {
-            FileService.CreateFile(_client);
-            FileService.CreateFile(_server);
+            if (_client != null && _server != null && _password != null)
+            {
+                FileService.CreateFile(_client);
+                FileService.CreateFile(_server);
+                _ = new VaultKey(_password);
+            }
         }
     }
 }
