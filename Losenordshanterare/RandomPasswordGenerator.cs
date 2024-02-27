@@ -10,9 +10,9 @@ namespace Losenordshanterare
 {
     internal static class RandomPasswordGenerator
     {
-        public static string? GeneratePassword() => RandomPassword();
+        public static string? NewPassword() => GeneratePassword();
 
-        private static string? RandomPassword()
+        private static string? GeneratePassword()
         {
             Random _random = new Random();
             const int passLength = 20;
