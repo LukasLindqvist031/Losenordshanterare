@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 
 namespace Losenordshanterare
 {
-    internal static class GeneratePassword
+    internal static class RandomPasswordGenerator
     {
-        public static string? GenerateNewPassword()
+        public static string? GeneratePassword() => RandomPassword();
+
+        private static string? RandomPassword()
         {
             Random _random = new Random();
             const int passLength = 20;
@@ -24,7 +26,7 @@ namespace Losenordshanterare
             }
 
             chars = Shuffle(chars);
-            
+
             return new string(chars);
         }
 
