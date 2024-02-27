@@ -32,7 +32,7 @@ namespace Losenordshanterare
             _secretKey = new SecretKey();
             _vaultKey = new VaultKey(_password, _secretKey);
             _vault = new Vault();
-            Encryption enc = new Encryption(_vaultKey);
+            Encryption enc = new Encryption();
 
             Execute();
         }
