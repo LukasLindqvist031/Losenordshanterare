@@ -40,7 +40,7 @@ namespace Losenordshanterare
         }
 
         //Decrypt the data using the _aes object
-        public byte[] Decrypt(byte[] byteArray)
+        public string Decrypt(byte[] byteArray)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -48,7 +48,7 @@ namespace Losenordshanterare
                 {
                     csDecrypt.Write(byteArray, 0, byteArray.Length);
                 }
-                return ms.ToArray();
+                return ms.ToString();
             }
         }
 
