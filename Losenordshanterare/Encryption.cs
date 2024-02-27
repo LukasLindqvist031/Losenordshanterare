@@ -16,40 +16,45 @@ namespace Losenordshanterare
 {
     internal class Encryption
     {
-        //Creates an Aes object
-        private readonly Crypto.Aes _aes;
-        
+        public readonly Crypto.Aes _aes;
+
         public Encryption()
         {
             _aes = Crypto.Aes.Create();
         }
-      
-        //Encrypt the data using the _aes object
+
         public byte[] Encrypt(string data)
         {
-            byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(data);
+            _aes.GenerateIV(); 
+            byte[] encrypted;
+            byte[] byteArray = Encoding.UTF8.GetBytes(data);
 
             using (MemoryStream ms = new MemoryStream())
             {
-                using (CryptoStream csEncrypt = new CryptoStream(ms, _aes.CreateEncryptor(), CryptoStreamMode.Write))
+                using (CryptoStream csEncrypt = new CryptoStream(ms, _aes.CreateEncryptor(_aes.Key, _aes.IV), CryptoStreamMode.Write))
                 {
-                    csEncrypt.Write(byteArray, 0, data.Length);
+                    csEncrypt.Write(byteArray, 0, byteArray.Length);
+                    csEncrypt.FlushFinalBlock();
+                    encrypted = ms.ToArray();
                 }
-                return ms.ToArray();
             }
+            return encrypted;
         }
 
-        //Decrypt the data using the _aes object
-        public string Decrypt(byte[] byteArray)
+        public string Decrypt(byte[] cipherText)
         {
-            using (MemoryStream ms = new MemoryStream())
+            string plaintext = null;
+            using (MemoryStream ms = new MemoryStream(cipherText))
             {
-                using (CryptoStream csDecrypt = new CryptoStream(ms, _aes.CreateDecryptor(), CryptoStreamMode.Write))
+                using (CryptoStream csDecrypt = new CryptoStream(ms, _aes.CreateDecryptor(_aes.Key, _aes.IV), CryptoStreamMode.Read))
                 {
-                    csDecrypt.Write(byteArray, 0, byteArray.Length);
+                    using (StreamReader reader = new StreamReader(csDecrypt))
+                    {
+                        plaintext = reader.ReadToEnd();
+                    }
                 }
-                return ms.ToString();
             }
+            return plaintext;
         }
 
         //Generate an IV
@@ -73,8 +78,6 @@ namespace Losenordshanterare
             AesObject aesobject = JsonSerializer.Deserialize<AesObject>(data);
             _aes.Key = aesobject.Key;
             _aes.IV = aesobject.IV;
-            _aes.Mode = aesobject.Mode;
-            _aes.Padding = aesobject.Padding;
         }
-    } 
+    }
 }
