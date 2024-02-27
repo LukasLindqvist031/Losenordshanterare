@@ -27,7 +27,7 @@ namespace Losenordshanterare
             }
         }
 
-        public byte[] GetKey() => _key;
+        public byte[] GetKey => _key;
 
     }
 }

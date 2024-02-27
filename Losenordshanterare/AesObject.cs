@@ -1,18 +1,21 @@
-﻿using System;
+﻿using Losenordshanterare;
+using System;
 using System.Security.Cryptography;
 
-public class AesObject
+internal class AesObject
 {
-    public byte[] Key { get; set; }
-    public byte[] IV { get; set; }
-    public CipherMode Mode { get; set; }
-    public PaddingMode Padding { get; set; }
+    private readonly VaultKey _vaultKey;
+    private readonly byte[] _iv;
 
-    public AesObject(Aes aes)
+    public AesObject(VaultKey vaultKey)
     {
-        Key = aes.Key;
-        IV = aes.IV;
-        Mode = aes.Mode;
-        Padding = aes.Padding;
+        Aes aes = Aes.Create();
+        _iv = aes.IV;
+        _vaultKey = vaultKey;
     }
+
+    public byte[] GetIV => _iv;
+    public VaultKey GetVaultKey => _vaultKey;
+
+    
 }

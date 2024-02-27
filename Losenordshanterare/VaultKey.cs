@@ -25,7 +25,7 @@ namespace Losenordshanterare
         private byte[] GenerateVaultKey(string password, SecretKey secretKey)
         {
             const int iterations = 10000;
-            byte[] salt = secretKey.GetKey();
+            byte[] salt = secretKey.GetKey;
 
             Rfc2898DeriveBytes rfc = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA256);
 
@@ -34,7 +34,7 @@ namespace Losenordshanterare
             return derivedKey;
         }
 
-        public byte[] GetKey() => _vaultKey;
+        public byte[] GetKey => _vaultKey;
 
         
         
