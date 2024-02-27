@@ -20,7 +20,7 @@ public class Vault
 
                 if (vaultBytes.Length > 0)
                 {
-                    //Funktionalitet för att låsa upp valvet 
+                    //Funktionalitet för att låsa upp och läsa från valvet
                 }
             }
             catch (Exception ex)
