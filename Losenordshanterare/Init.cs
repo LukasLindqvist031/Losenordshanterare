@@ -14,6 +14,8 @@ namespace Losenordshanterare
         private readonly string? _password;
         private readonly SecretKey _secretKey;
         private readonly VaultKey _vaultKey;
+        private readonly AesObject _aes;
+        private readonly Vault _vault;
 
         public Init(string[] args)
         {
@@ -30,8 +32,10 @@ namespace Losenordshanterare
 
             _secretKey = new SecretKey();
             _vaultKey = new VaultKey(_password, _secretKey);
-
+            _aes = new AesObject(_vaultKey);
+            _vault = new Vault();
         }
+        
 
 
     }
