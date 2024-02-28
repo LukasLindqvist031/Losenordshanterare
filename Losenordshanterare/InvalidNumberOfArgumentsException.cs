@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Losenordshanterare
 {
-    internal interface ICommand
+    internal class InvalidNumberOfArgumentsException : Exception
     {
-        public void Execute() { }
+        public InvalidNumberOfArgumentsException(string message) : base(message) { }
     }
 }

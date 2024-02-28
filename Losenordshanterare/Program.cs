@@ -10,8 +10,8 @@ namespace Losenordshanterare
             {
                 UserInput.ProcessCommandLine(args);
             }
-
             
+
             //FileService.WriteToFile("LUKAS");
             //FileService.Execute();
             //Console.ReadLine();

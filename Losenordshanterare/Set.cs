@@ -11,19 +11,90 @@ namespace Losenordshanterare
         private readonly string? _client;
         private readonly string? _server;
         private readonly string? _property;
-        private readonly string? _password;
-        private readonly string? _value;
+        private string? _masterPassword;
+        private string? _valuePassword;
 
-        public Set(string? client, string? server, string? property)
+        public Set(string[] args)
         {
-            _client = client;
-            _server = server;
-            _property = property;
+            if (args.Length < 4 || args.Length > 5)
+            {
+                throw new InvalidNumberOfArgumentsException($"Error: Expected 4 or 5 arguments, but received {args.Length}.");
+            }
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (string.IsNullOrWhiteSpace(args[i]))
+                {
+                    throw new NullOrWhiteSpaceArgumentException($"Error: Argument '{args[i]}' at index {i} cannot be null or whitespace.");
+                }
+            }
+
+            if (args.Length == 4)
+            {
+                _client = args[1];
+                _server = args[2];
+                _property = args[3];
+            }
+            
+            if(args.Length == 5 && IsAutoGenerate(args[4]) == true) 
+            {
+                _client = args[1];
+                _server = args[2];
+                _property = args[3];
+                _valuePassword = RandomPasswordGenerator.NewPassword();
+            }
+            
         }
 
-        private void Execute()
+        public void Execute()
         {
-            throw new NotImplementedException();
+            string[] inputArr = GetInput();
+            ProcessInput(inputArr);
+
+            Console.WriteLine("Everything fine so far!");
+
+        }
+
+        private void ProcessInput(string[] inputArr)
+        {
+            if(inputArr.Length > 1)
+            {
+                _masterPassword = inputArr[0];
+                _valuePassword = inputArr[1];
+            }
+            else
+            {
+                _masterPassword = inputArr[0];
+            }
+        }
+
+        private string[] GetInput()
+        {
+            if (string.IsNullOrEmpty(_valuePassword))
+            {
+                return UserPrompt.PromptUserSet(_valuePassword);
+            }
+            else
+            {
+                return UserPrompt.PromptUserSet();
+            }
+        }
+
+                
+        private bool IsAutoGenerate(string arg)
+        {
+            const string g = "-g";
+            const string generate = "--generate";
+
+            if(arg == g || arg == generate)
+            {
+                return true;
+
+            }
+            else
+            {
+                throw new ArgumentException("Incorrect term for auto generated password. Correct terms are '-g' or '--generate'.");
+            }
         }
     }
 }
