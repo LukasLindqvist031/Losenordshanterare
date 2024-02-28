@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.Json;
 
 namespace Losenordshanterare
 {
@@ -18,19 +19,28 @@ namespace Losenordshanterare
             }
         }
 
-        public static void ReadFile(string path)
+        public static string ReadFile(string path)
         {
             try
             {
                 string fileContent = File.ReadAllText(path);
-                Console.WriteLine("File content:");
-                Console.WriteLine(fileContent);
+                return fileContent;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while reading the file: {ex.Message}");
+                return $"An error occurred while reading the file: {ex.Message}";
             }
         }
+
+        public static SecretKey ReadSecretKeyFromFile(string client)
+        {
+            string fileContent = File.ReadAllText(client);
+
+            SecretKey secretKey = JsonSerializer.Deserialize<SecretKey>(fileContent);
+
+            return secretKey;
+        }
+
 
         public static void WriteToFile(string jsonContent, string path)
         {
