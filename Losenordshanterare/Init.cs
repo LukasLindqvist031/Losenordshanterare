@@ -23,14 +23,14 @@ namespace Losenordshanterare
         {
             if (args.Length != 4)
             {
-                throw new ArgumentException("The number of arguments are invalid. Try again.");
+                throw new InvalidNumberOfArgumentsException($"Error: Expected 4 arguments, but received {args.Length}.");
             }
 
-            foreach (string arg in args)
+            for (int i = 0; i < args.Length; i++)
             {
-                if (string.IsNullOrWhiteSpace(arg))
+                if (string.IsNullOrWhiteSpace(args[i]))
                 {
-                    throw new ArgumentException("Arguments cannot be null or consist of white space.");
+                    throw new NullOrWhiteSpaceArgumentException($"Error: Argument '{args[i]}' at index {i} cannot be null or whitespace.");
                 }
             }
 

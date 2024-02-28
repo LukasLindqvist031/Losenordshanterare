@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Losenordshanterare
 {
-    internal interface ICommand
+    internal class NullOrWhiteSpaceArgumentException : Exception
     {
-        public void Execute() { }
+        public NullOrWhiteSpaceArgumentException(string message) : base(message) { }
     }
 }
