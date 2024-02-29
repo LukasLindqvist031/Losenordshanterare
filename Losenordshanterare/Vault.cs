@@ -7,14 +7,8 @@ using System.Security.Cryptography;
 internal class Vault
 {
     private Dictionary<string, string> _logInDict = new Dictionary<string, string>();
-    private readonly VaultKey _vaultKey;
-    private readonly Aes _aes;
-
-    public Vault(VaultKey vaultKey, Aes aes)
-    {
-        _vaultKey = vaultKey;
-        _aes = aes;
-    }
+    
+    public Vault() { }
 
     public Dictionary<string, string> GetVault => _logInDict;
 
@@ -30,35 +24,34 @@ internal class Vault
         }
     }
 
-    public string EncryptVault()
+    public string EncryptVault(VaultKey vk, Aes aes)
     {
         string jsonDict = SerializeVault();
-        byte[] encryptedVault = Encrypt(jsonDict);
+        byte[] encryptedVault = Encrypt(jsonDict, vk, aes);
         string vaultBase64 = VaultToBase64(encryptedVault);
-        string jsonBase64 = Base64ToJson(vaultBase64);
-        return jsonBase64;
+        return vaultBase64;
     }
 
 
     //Used when EncryptVault is called.
-    private string Base64ToJson(string encodedData) => JsonSerializer.Serialize(new { EncryptedData = encodedData });
     private string VaultToBase64(byte[] encryptedVault) => Convert.ToBase64String(encryptedVault);
-    private byte[] Encrypt(string jsonVault) => Encryption.Encrypt(jsonVault, _vaultKey, _aes);
+    private byte[] Encrypt(string jsonVault, VaultKey vk, Aes aes ) => Encryption.Encrypt(jsonVault, vk, aes);
     private string SerializeVault() => JsonSerializer.Serialize(_logInDict);
 
 
-    public Vault DecryptVault(string vaultBase64)
+    public Vault DecryptVault(string vaultBase64, VaultKey vk, Aes aes)
     {
         byte[] encryptedVault = Base64ToVault(vaultBase64);
-        string decryptedVault = Decrypt(encryptedVault);
+        string decryptedVault = Decrypt(encryptedVault, vk, aes);
         Vault vault = DeserializeVault(decryptedVault);
         return vault;
     }
 
     //Used when DecryptVault is called.
     private Vault DeserializeVault(string jsonDict) => JsonSerializer.Deserialize<Vault>(jsonDict);
-    private string Decrypt(byte[] encryptedVault) => Encryption.Decrypt(encryptedVault, _vaultKey, _aes);
+    private string Decrypt(byte[] encryptedVault, VaultKey vk, Aes aes) => Encryption.Decrypt(encryptedVault, vk, aes);
     private byte[] Base64ToVault(string vaultBase64) => Convert.FromBase64String(vaultBase64);
+
 
 
 
