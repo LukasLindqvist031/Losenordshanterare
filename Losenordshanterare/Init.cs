@@ -43,7 +43,7 @@ namespace Losenordshanterare
             _vault = new Vault();
         }
 
-        public void Execute(string property)
+        public void Execute()
         {            
             string base64Vault = _vault.EncryptVault(_vaultKey, _aes);
             string base64IV = ConvertIVToBase64();
@@ -56,7 +56,7 @@ namespace Losenordshanterare
             {
                 FileService.CreateFile(_client);
                 FileService.CreateFile(_server);
-                FileService.WriteToFile(jsonServerData, _server); 
+                FileService.WriteToFile(jsonDict, _server); 
                 FileService.WriteToFile(ConvertSecretKeyToJson(), _client); 
             }
             catch (Exception ex)

@@ -15,6 +15,10 @@ namespace Losenordshanterare
         {
             _key  = GenerateSecretKey();
         }
+        public SecretKey(byte[] key)
+        {
+            _key = key;
+        }
 
         private static byte[] GenerateSecretKey()
         {

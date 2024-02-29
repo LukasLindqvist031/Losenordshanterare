@@ -32,21 +32,24 @@ namespace Losenordshanterare
             }
         }
 
-        public static string ReadVaultFromFile(string serverPath)
+        public static Vault ReadVaultFromFile(string serverPath)
         {
             string fileContent = File.ReadAllText(serverPath);
             Dictionary<string, string> jsonData = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
-            string encryptedVault = jsonData["EncryptedData"];
-            return encryptedVault;
+            string jsonVault = jsonData["EncryptedVault"];
+            Vault encodedVault = JsonSerializer.Deserialize<Vault>(jsonVault);
+            return encodedVault;
         }
 
         public static SecretKey ReadSecretKeyFromFile(string clientPath)
         {
             string fileContent = File.ReadAllText(clientPath);
 
-            SecretKey secretKey = JsonSerializer.Deserialize<SecretKey>(fileContent);
-
-            return secretKey;
+            Dictionary<string, string> jsonData = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
+            string secretBase64 = jsonData["Secret"];
+            byte[] secretKey = Convert.FromBase64String(secretBase64);
+            SecretKey secret = new(secretKey);
+            return secret;
         }
 
         public static byte[] ReadIVFromFile(string serverPath)
