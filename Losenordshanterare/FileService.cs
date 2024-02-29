@@ -32,15 +32,31 @@ namespace Losenordshanterare
             }
         }
 
-        public static SecretKey ReadSecretKeyFromFile(string client)
+        public static string ReadVaultFromFile(string serverPath)
         {
-            string fileContent = File.ReadAllText(client);
+            string fileContent = File.ReadAllText(serverPath);
+            Dictionary<string, string> jsonData = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
+            string encryptedVault = jsonData["EncryptedData"];
+            return encryptedVault;
+        }
+
+        public static SecretKey ReadSecretKeyFromFile(string clientPath)
+        {
+            string fileContent = File.ReadAllText(clientPath);
 
             SecretKey secretKey = JsonSerializer.Deserialize<SecretKey>(fileContent);
 
             return secretKey;
         }
 
+        public static byte[] ReadIVFromFile(string serverPath)
+        {
+            string fileContent = File.ReadAllText(serverPath);
+            Dictionary<string, string> jsonData = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
+            string encodedIV = jsonData["EncodedIV"];
+            byte[] iv = Convert.FromBase64String(encodedIV);
+            return iv;
+        }
 
         public static void WriteToFile(string jsonContent, string path)
         {
@@ -57,8 +73,8 @@ namespace Losenordshanterare
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
-            
-            
+
+
         }
     }
 }

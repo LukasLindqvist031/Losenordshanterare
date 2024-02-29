@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace Losenordshanterare
 {
@@ -13,6 +14,7 @@ namespace Losenordshanterare
         private readonly string? _property;
         private string? _masterPassword;
         private string? _valuePassword;
+        private readonly Aes _aes;
 
         public Set(string[] args)
         {
@@ -35,29 +37,45 @@ namespace Losenordshanterare
                 _server = args[2];
                 _property = args[3];
             }
-            
-            if(args.Length == 5 && IsAutoGenerate(args[4]) == true) 
+            else if (args.Length == 5 && IsAutoGenerate(args[4]) == true)
             {
                 _client = args[1];
                 _server = args[2];
                 _property = args[3];
                 _valuePassword = RandomPasswordGenerator.NewPassword();
             }
-            
+
+            _aes = Aes.Create();
+
         }
 
         public void Execute()
         {
             string[] inputArr = GetInput();
             ProcessInput(inputArr);
+            SecretKey secretKey = GetSecretKey(_client);
+            VaultKey vaultKey = new(_masterPassword, secretKey);
+            _aes.IV = FileService.ReadIVFromFile(_server);
+            string encryptedVault = FileService.ReadVaultFromFile(_server);
+            Vault vault = new(vaultKey, _aes);
+            vault = vault.DecryptVault(encryptedVault);
 
-            Console.WriteLine("Everything fine so far!");
+            try
+            {
+                vault.AddToVault(_property, _valuePassword);
+                Console.WriteLine("Everything fine so far!");
+                vault.EncryptVault();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to execute 'set'. Error: {ex.Message}");
+            }
 
         }
 
         private void ProcessInput(string[] inputArr)
         {
-            if(inputArr.Length > 1)
+            if (inputArr.Length > 1)
             {
                 _masterPassword = inputArr[0];
                 _valuePassword = inputArr[1];
@@ -80,13 +98,15 @@ namespace Losenordshanterare
             }
         }
 
-                
+        private SecretKey GetSecretKey(string clientPath) => FileService.ReadSecretKeyFromFile(clientPath);
+
+
         private bool IsAutoGenerate(string arg)
         {
             const string g = "-g";
             const string generate = "--generate";
 
-            if(arg == g || arg == generate)
+            if (arg == g || arg == generate)
             {
                 return true;
 
