@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
@@ -43,23 +43,23 @@ namespace Losenordshanterare
             _vault = new Vault();
         }
 
-        public void Execute()
-        {
+        public void Execute(string property)
+        {            
             string base64Vault = _vault.EncryptVault(_vaultKey, _aes);
             string base64IV = ConvertIVToBase64();
             string jsonSecretKey = ConvertSecretKeyToJson();
             Dictionary<string, string> dict = ConvertToDict(base64Vault, base64IV);
             string jsonDict = SerializeDict(dict);
-            
 
+          
             try
             {
                 FileService.CreateFile(_client);
                 FileService.CreateFile(_server);
-                FileService.WriteToFile(jsonDict, _server);
-                FileService.WriteToFile(jsonSecretKey, _client);
+                FileService.WriteToFile(jsonServerData, _server); 
+                FileService.WriteToFile(ConvertSecretKeyToJson(), _client); 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Failed to execute 'init'. Error: {ex.Message}");
             }
@@ -74,8 +74,7 @@ namespace Losenordshanterare
         private string ConvertSecretKeyToJson()
         {
             string encodedSecret = Convert.ToBase64String(_secretKey.GetKey);
-            string jsonSecret = JsonSerializer.Serialize(new { Secret = encodedSecret });
-            return jsonSecret;
+            return JsonSerializer.Serialize(new { Secret = encodedSecret });
         }
 
         private Dictionary<string, string> ConvertToDict(string vault, string iv)
@@ -87,7 +86,6 @@ namespace Losenordshanterare
         }
 
         private string SerializeDict(Dictionary<string, string> dict) => JsonSerializer.Serialize(dict);
-
     }  
     
 }
