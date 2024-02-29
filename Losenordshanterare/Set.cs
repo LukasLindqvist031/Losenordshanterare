@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using System.Text.Json;
+using System.Buffers.Text;
 
 namespace Losenordshanterare
 {
@@ -14,7 +16,6 @@ namespace Losenordshanterare
         private readonly string? _property;
         private string? _masterPassword;
         private string? _valuePassword;
-        private readonly Aes _aes;
 
         public Set(string[] args)
         {
@@ -45,8 +46,6 @@ namespace Losenordshanterare
                 _valuePassword = RandomPasswordGenerator.NewPassword();
             }
 
-            _aes = Aes.Create();
-
         }
 
         public void Execute()
@@ -55,15 +54,23 @@ namespace Losenordshanterare
             ProcessInput(inputArr);
             SecretKey secretKey = GetSecretKey(_client);
             VaultKey vaultKey = new(_masterPassword, secretKey);
-            _aes.IV = FileService.ReadIVFromFile(_server);
-            Vault vault = FileService.ReadVaultFromFile(_server);
-            //vault = vault.DecryptVault(vault);
+            byte[] iv = FileService.ReadIVFromFile(_server);
+            string base64Vault = FileService.ReadVaultFromFile(_server);
+
+            Dictionary<string, string> dict = Vault.DecryptVault(base64Vault, vaultKey, iv);
+            Vault vault = new Vault(dict);
+            Aes aes = Aes.Create();
 
             try
             {
                 vault.AddToVault(_property, _valuePassword);
                 Console.WriteLine("Everything fine so far!");
-                vault.EncryptVault(vaultKey, _aes);
+                vault.PrintVault();
+                string encryptedBase64 = vault.EncryptVault(vaultKey, aes);
+                string base64IV = Convert.ToBase64String(aes.IV);
+                Dictionary<string, string> serverDict = ConvertToDict(encryptedBase64, base64IV);
+                string jsonDict = SerializeDict(serverDict);
+                FileService.WriteToFile(jsonDict, _server);
             }
             catch (Exception ex)
             {
@@ -100,6 +107,9 @@ namespace Losenordshanterare
         private SecretKey GetSecretKey(string clientPath) => FileService.ReadSecretKeyFromFile(clientPath);
 
 
+   
+
+
         private bool IsAutoGenerate(string arg)
         {
             const string g = "-g";
@@ -115,5 +125,16 @@ namespace Losenordshanterare
                 throw new ArgumentException("Incorrect term for auto generated password. Correct terms are '-g' or '--generate'.");
             }
         }
+
+        private Dictionary<string, string> ConvertToDict(string vault, string iv)
+        {
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            dict["EncodedIV"] = iv;
+            dict["EncryptedVault"] = vault;
+            return dict;
+        }
+
+        private string SerializeDict(Dictionary<string, string> dict) => JsonSerializer.Serialize(dict);
+
     }
 }

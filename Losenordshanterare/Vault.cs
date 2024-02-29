@@ -3,12 +3,18 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Security.Cryptography;
+using System.Collections.Generic;
 
 internal class Vault
 {
-    private Dictionary<string, string> _logInDict = new Dictionary<string, string>();
+    private Dictionary<string, string> _logInDict;
     
-    public Vault() { }
+    public Vault() { _logInDict = new(); }
+
+    public Vault(Dictionary<string, string> dict)
+    {
+        _logInDict = new Dictionary<string, string> (dict);
+    }
 
     public Dictionary<string, string> GetVault => _logInDict;
 
@@ -39,18 +45,25 @@ internal class Vault
     private string SerializeVault() => JsonSerializer.Serialize(_logInDict);
 
 
-    public Vault DecryptVault(string vaultBase64, VaultKey vk, Aes aes)
+    public static Dictionary<string, string> DecryptVault(string vaultBase64, VaultKey vk, byte[] oldIV)
     {
         byte[] encryptedVault = Base64ToVault(vaultBase64);
-        string decryptedVault = Decrypt(encryptedVault, vk, aes);
-        Vault vault = DeserializeVault(decryptedVault);
-        return vault;
+        string decryptedVault = Decrypt(encryptedVault, vk, oldIV);
+        return DeserializeVault(decryptedVault);   
     }
 
     //Used when DecryptVault is called.
-    private Vault DeserializeVault(string jsonDict) => JsonSerializer.Deserialize<Vault>(jsonDict);
-    private string Decrypt(byte[] encryptedVault, VaultKey vk, Aes aes) => Encryption.Decrypt(encryptedVault, vk, aes);
-    private byte[] Base64ToVault(string vaultBase64) => Convert.FromBase64String(vaultBase64);
+    private static Dictionary<string,string> DeserializeVault(string jsonDict) => JsonSerializer.Deserialize<Dictionary<string, string>>(jsonDict);
+    private static string Decrypt(byte[] encryptedVault, VaultKey vk, byte[] oldIV) => Encryption.Decrypt(encryptedVault, vk, oldIV);
+    private static byte[] Base64ToVault(string vaultBase64) => Convert.FromBase64String(vaultBase64);
+
+    public void PrintVault()
+    {
+        foreach (KeyValuePair<string, string> kvp in _logInDict)
+        {
+            Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}");
+        }
+    }
 
 
 

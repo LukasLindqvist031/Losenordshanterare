@@ -32,13 +32,12 @@ namespace Losenordshanterare
             }
         }
 
-        public static Vault ReadVaultFromFile(string serverPath)
+        public static string ReadVaultFromFile(string serverPath)
         {
             string fileContent = File.ReadAllText(serverPath);
             Dictionary<string, string> jsonData = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
-            string jsonVault = jsonData["EncryptedVault"];
-            Vault encodedVault = JsonSerializer.Deserialize<Vault>(jsonVault);
-            return encodedVault;
+            string base64Vault = jsonData["EncryptedVault"];
+            return base64Vault;
         }
 
         public static SecretKey ReadSecretKeyFromFile(string clientPath)
@@ -65,7 +64,7 @@ namespace Losenordshanterare
         {
             try
             {
-                using (StreamWriter writer = new StreamWriter(path, append: true))
+                using (StreamWriter writer = new StreamWriter(path, append: false))
                 {
                     writer.WriteLine(jsonContent);
                 }

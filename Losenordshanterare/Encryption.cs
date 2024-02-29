@@ -31,13 +31,14 @@ namespace Losenordshanterare
             return encrypted;
         }
 
-        public static string Decrypt(byte[] cipherText, VaultKey vaultKey, Aes aes)
+        public static string Decrypt(byte[] cipherText, VaultKey vaultKey, byte[] oldIV)
         {
+            Aes aes = Aes.Create();
             byte[] key = vaultKey.GetKey;
             string plaintext = string.Empty;
             using (MemoryStream ms = new MemoryStream(cipherText))
             {
-                using (CryptoStream csDecrypt = new CryptoStream(ms, aes.CreateDecryptor(key, aes.IV), CryptoStreamMode.Read))
+                using (CryptoStream csDecrypt = new CryptoStream(ms, aes.CreateDecryptor(key, oldIV), CryptoStreamMode.Read))
                 {
                     using (StreamReader reader = new StreamReader(csDecrypt))
                     {
