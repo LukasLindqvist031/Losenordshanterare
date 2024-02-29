@@ -40,15 +40,15 @@ namespace Losenordshanterare
             _secretKey = new SecretKey();
             _vaultKey = new VaultKey(_password, _secretKey);
             _aes = Aes.Create();
-            _vault = new Vault(_vaultKey, _aes);
+            _vault = new Vault();
         }
 
         public void Execute()
         {
-            string jsonVault = _vault.EncryptVault();
-            string jsonIV = ConvertIVToJson();
+            string base64Vault = _vault.EncryptVault(_vaultKey, _aes);
+            string base64IV = ConvertIVToBase64();
             string jsonSecretKey = ConvertSecretKeyToJson();
-            Dictionary<string, string> dict = ConvertToDict(jsonVault, jsonIV);
+            Dictionary<string, string> dict = ConvertToDict(base64Vault, base64IV);
             string jsonDict = SerializeDict(dict);
             
 
@@ -65,11 +65,10 @@ namespace Losenordshanterare
             }
         }
 
-        private string ConvertIVToJson()
+        private string ConvertIVToBase64()
         {
             string encodedIV = Convert.ToBase64String(_aes.IV);
-            string jsonIV = JsonSerializer.Serialize(encodedIV );
-            return jsonIV;
+            return encodedIV;
         }
 
         private string ConvertSecretKeyToJson()
