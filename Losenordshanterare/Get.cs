@@ -43,11 +43,13 @@ namespace Losenordshanterare
         public void Execute()
         {
             string[] inputArr = GetInput();
+            ProcessInput(inputArr);
             SecretKey secretKey = GetSecretKey(_client);
             VaultKey vaultKey = new(_masterPassword, secretKey);
             byte[] iv = FileService.ReadIVFromFile(_server);
             string base64Vault = FileService.ReadVaultFromFile(_server);
 
+            
             Dictionary<string, string> dict = Vault.DecryptVault(base64Vault, vaultKey, iv);
             Vault vault = new Vault(dict);
 
@@ -66,7 +68,7 @@ namespace Losenordshanterare
 
         private void PrintPasswords(Dictionary<string, string> propertyPasswordDict, int argsLength)
         {
-            if(argsLength == 3)
+            if (argsLength == 3)
             {
                 foreach (var pair in propertyPasswordDict)
                 {
