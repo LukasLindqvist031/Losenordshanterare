@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
-using Crypto = System.Security.Cryptography;
+using System.Security.Cryptography;
 
 namespace Losenordshanterare
 {
@@ -38,7 +38,7 @@ namespace Losenordshanterare
             VaultKey vk = new VaultKey(_password, clientKey);
 
             string decryptedPasswordsJson;
-            using (Crypto.Aes aes = Crypto.Aes.Create())
+            using (Aes aes = Aes.Create())
             {
                 aes.IV = iv;
                 decryptedPasswordsJson = Encryption.Decrypt(encryptedPasswordBytes, vk, aes);
@@ -57,7 +57,7 @@ namespace Losenordshanterare
                     Console.WriteLine($"Property {_property} not found.");
                 }
             }
-            
+
             else
             {
                 foreach (var pair in propertyPasswordDict)
