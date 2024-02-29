@@ -2,84 +2,89 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
-using Crypto = System.Security.Cryptography;
+using System.Security.Cryptography;
 
 namespace Losenordshanterare
 {
     internal class Get : ICommand
     {
-        //private readonly string? _client;
-        //private readonly string? _server;
-        //private readonly string? _property;
-        //private readonly string? _password;
+        private readonly string? _client;
+        private readonly string? _server;
+        private readonly string? _property;
+        private string? _masterPassword;
+        private string? _valuePassword;
+        private readonly int _argsLength;
 
-        //public Get(string[] args)
-        //{
-        //    if (args.Length != 5)
-        //        throw new ArgumentException("Incorrect number of arguments for get command. Number of arguments: " + args.Length);
+        public Get(string[] args)
+        {
+            _argsLength = args.Length;
 
-        //    _client = args[1];
-        //    _server = args[2];
-        //    _property = args[3];
-        //    _password = args[4];
-        //}
+            if (args.Length < 3 || args.Length > 4)
+            {
+                throw new InvalidNumberOfArgumentsException($"Error: Expected 3 or 4 arguments, but received {args.Length}.");
+            }
 
-        //public void Execute()
-        //{
-        //    SecretKey clientKey = FileService.ReadSecretKeyFromFile(_client);
+            if(args.Length == 3)
+            {
+                _client = args[1];
+                _server = args[2];
+            }
 
-        //    string serverContent = FileService.ReadFile(_server);
-        //    ServerFormat serverFormat = JsonSerializer.Deserialize<ServerFormat>(serverContent);
-        //    byte[] iv = serverFormat.IV;
+            if(args.Length == 4)
+            {
+                _client = args[1];
+                _server = args[2];
+                _property = args[3];
+            }
+        }
 
-        //    byte[] encryptedPasswordBytes = GetEncryptedPasswords(serverFormat);
+        private SecretKey GetSecretKey(string clientPath) => FileService.ReadSecretKeyFromFile(clientPath);
 
-        //    VaultKey vk = new VaultKey(_password, clientKey);
+        public void Execute()
+        {
+            string[] inputArr = GetInput();
+            SecretKey secretKey = GetSecretKey(_client);
+            VaultKey vaultKey = new(_masterPassword, secretKey);
+            byte[] iv = FileService.ReadIVFromFile(_server);
+            string base64Vault = FileService.ReadVaultFromFile(_server);
 
-        //    string decryptedPasswordsJson = DecryptPasswords(iv, encryptedPasswordBytes, vk);
+            Dictionary<string, string> dict = Vault.DecryptVault(base64Vault, vaultKey, iv);
+            Vault vault = new Vault(dict);
 
-        //    var propertyPasswordDict = JsonSerializer.Deserialize<Dictionary<string, string>>(decryptedPasswordsJson);
+            PrintPasswords(dict, _argsLength);
+        }
 
-        //    PrintPasswords(propertyPasswordDict);
-        //}
+        private void ProcessInput(string[] inputArr)
+        {
+            _masterPassword = inputArr[0];
+        }
 
-        //private byte[] GetEncryptedPasswords(ServerFormat serverFormat)
-        //{
-        //    string encryptedPasswords = JsonSerializer.Serialize(serverFormat.PropertyPassword);
-        //    return Encoding.UTF8.GetBytes(encryptedPasswords);
-        //}
+        private string[] GetInput()
+        {
+            return UserPrompt.PromptUserSet();
+        }
 
-        //private string DecryptPasswords(byte[] iv, byte[] encryptedPasswordBytes, VaultKey vk)
-        //{
-        //    string decryptedPasswordsJson;
-        //    using (Crypto.Aes aes = Crypto.Aes.Create())
-        //    {
-        //        aes.IV = iv;
-        //        decryptedPasswordsJson = Encryption.Decrypt(encryptedPasswordBytes, vk, aes);
-        //    }
-        //    return decryptedPasswordsJson;
-        //}
+        private void PrintPasswords(Dictionary<string, string> propertyPasswordDict, int argsLength)
+        {
+            if(argsLength == 3)
+            {
+                foreach (var pair in propertyPasswordDict)
+                {
+                    Console.WriteLine($"Property: {pair.Key}");
+                }
+            }
 
-        //private void PrintPasswords(Dictionary<string, string> propertyPasswordDict)
-        //{
-        //    if (!string.IsNullOrEmpty(_property))
-        //    {
-        //        if (propertyPasswordDict.TryGetValue(_property, out string password))
-        //        {
-        //            Console.WriteLine($"Password for {_property}: {password}");
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine($"Property {_property} not found.");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        foreach (var pair in propertyPasswordDict)
-        //        {
-        //            Console.WriteLine($"Property: {pair.Key}, Password: {pair.Value}");
-        //        }
-        //    }
-        //}
+            if(argsLength == 4)
+            {
+                if (propertyPasswordDict.TryGetValue(_property, out string password))
+                {
+                    Console.WriteLine($"Password for {_property}: {password}");
+                }
+                else
+                {
+                    Console.WriteLine($"Property {_property} not found.");
+                }
+            }
+        }
     }
 }
