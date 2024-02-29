@@ -32,20 +32,36 @@ namespace Losenordshanterare
             ServerFormat serverFormat = JsonSerializer.Deserialize<ServerFormat>(serverContent);
             byte[] iv = serverFormat.IV;
 
-            string encryptedPasswords = JsonSerializer.Serialize(serverFormat.PropertyPassword);
-            byte[] encryptedPasswordBytes = Encoding.UTF8.GetBytes(encryptedPasswords);
+            byte[] encryptedPasswordBytes = GetEncryptedPasswords(serverFormat);
 
             VaultKey vk = new VaultKey(_password, clientKey);
 
+            string decryptedPasswordsJson = DecryptPasswords(iv, encryptedPasswordBytes, vk);
+
+            var propertyPasswordDict = JsonSerializer.Deserialize<Dictionary<string, string>>(decryptedPasswordsJson);
+
+            PrintPasswords(propertyPasswordDict);
+        }
+
+        private byte[] GetEncryptedPasswords(ServerFormat serverFormat)
+        {
+            string encryptedPasswords = JsonSerializer.Serialize(serverFormat.PropertyPassword);
+            return Encoding.UTF8.GetBytes(encryptedPasswords);
+        }
+
+        private string DecryptPasswords(byte[] iv, byte[] encryptedPasswordBytes, VaultKey vk)
+        {
             string decryptedPasswordsJson;
             using (Crypto.Aes aes = Crypto.Aes.Create())
             {
                 aes.IV = iv;
                 decryptedPasswordsJson = Encryption.Decrypt(encryptedPasswordBytes, vk, aes);
             }
+            return decryptedPasswordsJson;
+        }
 
-            var propertyPasswordDict = JsonSerializer.Deserialize<Dictionary<string, string>>(decryptedPasswordsJson);
-
+        private void PrintPasswords(Dictionary<string, string> propertyPasswordDict)
+        {
             if (!string.IsNullOrEmpty(_property))
             {
                 if (propertyPasswordDict.TryGetValue(_property, out string password))
@@ -57,7 +73,6 @@ namespace Losenordshanterare
                     Console.WriteLine($"Property {_property} not found.");
                 }
             }
-            
             else
             {
                 foreach (var pair in propertyPasswordDict)
