@@ -46,8 +46,8 @@ namespace Losenordshanterare
         public void Execute()
         {
             string jsonVault = _vault.EncryptVault();
-            string jsonIV = ConvertIVToString();
-            string jsonSecretKey = ConvertSecretKeyToString();
+            string jsonIV = ConvertIVToJson();
+            string jsonSecretKey = ConvertSecretKeyToJson();
 
             try
             {
@@ -63,17 +63,17 @@ namespace Losenordshanterare
             }
         }
 
-        private string ConvertIVToString()
+        private string ConvertIVToJson()
         {
             string encodedIV = Convert.ToBase64String(_aes.IV);
             string jsonIV = JsonSerializer.Serialize(new { EncodedIV = encodedIV });
             return jsonIV;
         }
 
-        private string ConvertSecretKeyToString()
+        private string ConvertSecretKeyToJson()
         {
             string encodedSecret = Convert.ToBase64String(_secretKey.GetKey);
-            string jsonSecret = JsonSerializer.Serialize(encodedSecret);
+            string jsonSecret = JsonSerializer.Serialize(new { Secret = encodedSecret });
             return jsonSecret;
         }
 
