@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
@@ -40,29 +40,18 @@ namespace Losenordshanterare
             _secretKey = new SecretKey();
             _vaultKey = new VaultKey(_password, _secretKey);
             _aes = Aes.Create();
-            _vault = new Vault(_vaultKey, _aes);
+            _vault = new Vault();
         }
 
         public void Execute(string property)
-        {
-            string encryptedVault = _vault.EncryptVault(); 
-            string encodedIV = ConvertIVToJson(); 
+        {            
+            string base64Vault = _vault.EncryptVault(_vaultKey, _aes);
+            string base64IV = ConvertIVToBase64();
+            string jsonSecretKey = ConvertSecretKeyToJson();
+            Dictionary<string, string> dict = ConvertToDict(base64Vault, base64IV);
+            string jsonDict = SerializeDict(dict);
 
-            var propertyPassword = new Dictionary<string, string>
-    {
-        { "Property", property }, 
-        { "Password", encryptedVault } 
-    };
-
-            
-            var serverData = new
-            {
-                EncodedIV = encodedIV, 
-                PropertyPassword = propertyPassword 
-            };
-
-            string jsonServerData = JsonSerializer.Serialize(serverData, new JsonSerializerOptions { WriteIndented = true });
-
+          
             try
             {
                 FileService.CreateFile(_client);
@@ -76,10 +65,10 @@ namespace Losenordshanterare
             }
         }
 
-
-        private string ConvertIVToJson()
+        private string ConvertIVToBase64()
         {
-            return Convert.ToBase64String(_aes.IV);
+            string encodedIV = Convert.ToBase64String(_aes.IV);
+            return encodedIV;
         }
 
         private string ConvertSecretKeyToJson()
