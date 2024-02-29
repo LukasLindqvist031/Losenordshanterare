@@ -56,15 +56,14 @@ namespace Losenordshanterare
             SecretKey secretKey = GetSecretKey(_client);
             VaultKey vaultKey = new(_masterPassword, secretKey);
             _aes.IV = FileService.ReadIVFromFile(_server);
-            string encryptedVault = FileService.ReadVaultFromFile(_server);
-            Vault vault = new(vaultKey, _aes);
-            vault = vault.DecryptVault(encryptedVault);
+            Vault vault = FileService.ReadVaultFromFile(_server);
+            //vault = vault.DecryptVault(vault);
 
             try
             {
                 vault.AddToVault(_property, _valuePassword);
                 Console.WriteLine("Everything fine so far!");
-                vault.EncryptVault();
+                vault.EncryptVault(vaultKey, _aes);
             }
             catch (Exception ex)
             {
