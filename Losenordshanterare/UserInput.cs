@@ -22,7 +22,8 @@ namespace Losenordshanterare
                         init.Execute();
                         break;
                     case "create":
-                        Console.WriteLine("The command is create");
+                        Create create = new Create(args);
+                        create.Execute();
                         break;
                     case "get":
                         Get get = new Get(args);

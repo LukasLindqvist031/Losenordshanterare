@@ -72,7 +72,7 @@ namespace Losenordshanterare
             {
                 foreach (var pair in propertyPasswordDict)
                 {
-                    Console.WriteLine($"Property: {pair.Key}");
+                    Console.WriteLine(pair.Key);
                 }
             }
 
