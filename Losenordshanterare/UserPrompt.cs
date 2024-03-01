@@ -9,7 +9,7 @@ namespace Losenordshanterare
 {
     internal static class UserPrompt
     {
-        public static string[] PromptUserSet()
+        public static string[] PromptUser()
         {
             const string masterPrompt = "Please enter your master password: ";
 
@@ -61,6 +61,11 @@ namespace Losenordshanterare
             }
 
             return inputArr;
+        }
+
+        public static string[] PromptUserCreate()
+        {
+
         }
 
         private static bool IsValidInput(string[] args)

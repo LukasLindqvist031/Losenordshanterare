@@ -61,11 +61,11 @@ namespace Losenordshanterare
             }
             else
             {
-                return UserPrompt.PromptUserSet();
+                return UserPrompt.PromptUser();
             }
         }
 
-        public static string[] GetInput() => UserPrompt.PromptUserSet();
+        public static string[] GetInput() => UserPrompt.PromptUser();
 
     }
 }
