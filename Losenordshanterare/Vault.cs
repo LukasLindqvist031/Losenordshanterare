@@ -42,6 +42,23 @@ internal class Vault
         }
     }
 
+    public void PrintProperties()
+    {
+        foreach(KeyValuePair<string, string> kvp in _logInDict)
+        {
+            Console.WriteLine(kvp.Key);
+        }
+    }
+
+    public void PrintPropAndPass(string property)
+    {
+        if(_logInDict.TryGetValue(property, out string? password))
+        {
+            Console.WriteLine($"Property: {property}\nPassword: {password}");
+        }
+    }
+
+
     public string EncryptVault(VaultKey vk, Aes aes)
     {
         string jsonDict = SerializeVault();
@@ -65,7 +82,17 @@ internal class Vault
     }
 
     //Used when DecryptVault is called.
-    private static Dictionary<string,string> DeserializeVault(string jsonDict) => JsonSerializer.Deserialize<Dictionary<string, string>>(jsonDict);
+    private static Dictionary<string, string> DeserializeVault(string jsonDict)
+    {
+        Dictionary<string, string>? dict = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonDict);
+
+        if(dict == null)
+        {
+            throw new Exception("Error: Couldn't deserialize vault.");
+        }
+
+        return dict;
+    }
     private static string Decrypt(byte[] encryptedVault, VaultKey vk, byte[] oldIV) => Encryption.Decrypt(encryptedVault, vk, oldIV);
     private static byte[] Base64ToByteArr(string vaultBase64) => Convert.FromBase64String(vaultBase64);
 

@@ -4,43 +4,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text.RegularExpressions;
+using System.Net.Sockets;
 
 namespace Losenordshanterare
 {
     internal class Create : ICommand
     {
-        private readonly string? _client;
-        private readonly string? _server;
-        private string? _masterPassword;
-        private string? _secret;
+        private readonly string _client;
+        private readonly string _server;
+        private string _masterPassword = string.Empty;
+        private string _secret = string.Empty ;
 
         public Create(string[] args)
         {
-            if (args.Length < 3 || args.Length > 3)
-            {
-                throw new InvalidNumberOfArgumentsException($"Error: Expected 3 arguments, but received {args.Length}.");
-            }
-
-            if(args.Length == 3)
+            if (ValidateArguments.IsValidLengthCreate(args) && ValidateArguments.IsValidArgument(args))
             {
                 _client = args[1];
                 _server = args[2];
             }
+            else
+            {
+                throw new Exception("Failed to instantiate Create object.");
+            }
         }
-        private SecretKey GetSecretKey(string clientPath) => FileService.ReadSecretKeyFromFile(clientPath);
 
         public void Execute()
         {
-            string[] inputArr = GetInput();
+            string[] inputArr = UserInput.GetInputCreate();
             ProcessInput(inputArr);
-            SecretKey secretKey = GetSecretKey(_client);
+            string secret = inputArr[1];
+            string trimSecret = RemoveInvalidChars(secret);
+            byte[] arr = Convert.FromBase64String(trimSecret);
+            SecretKey secretKey = new SecretKey(arr);
             VaultKey vaultKey = new(_masterPassword, secretKey);
             byte[] iv = FileService.ReadIVFromFile(_server);
             string base64Vault = FileService.ReadVaultFromFile(_server);
+            string jsonSecret = Converter.ConvertSecretKeyToJson(secretKey.GetKey);
 
             if (IsValidate(base64Vault, vaultKey, iv))
             {
                 FileService.CreateFile(_client);
+                FileService.WriteToFile(jsonSecret, _client);
             }
         }
 
@@ -54,34 +60,20 @@ namespace Losenordshanterare
 
                 return true;
             }
-            catch (Exception ex) { Console.WriteLine("Could not decrypt the vault. Access denied."); return false; }
+            catch (Exception ex) { Console.WriteLine($"Could not decrypt the vault. Error: {ex.Message}"); return false; }
 
         }
 
         private void ProcessInput(string[] inputArr)
         {
-            if (inputArr.Length > 1)
-            {
-                _masterPassword = inputArr[0];
-                _secret = inputArr[1];
-            }
-            else
-            {
-                _masterPassword = inputArr[0];
-            }
+             _masterPassword = inputArr[0];
+             _secret = inputArr[1];
         }
 
-
-        private string[] GetInput()
+        private string RemoveInvalidChars(string input)
         {
-            if (string.IsNullOrEmpty(_secret))
-            {
-                return UserPrompt.PromptUserSet(_secret);
-            }
-            else
-            {
-                return UserPrompt.PromptUserSet();
-            }
+            Regex regex = new Regex(@"^[\w/\:.-]+;base64,");
+            return regex.Replace(input, string.Empty);
         }
     }
 }

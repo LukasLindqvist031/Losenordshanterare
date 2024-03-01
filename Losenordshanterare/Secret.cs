@@ -8,23 +8,19 @@ namespace Losenordshanterare
 {
     internal class Secret : ICommand
     {
-        private readonly string? _client;
+        private readonly string _client;
 
         public Secret(string[] args)
         {
-            if (args.Length < 2 || args.Length > 2)
+            if (ValidateArguments.IsValidLengthSecret(args) && ValidateArguments.IsValidArgument(args))
             {
-                throw new InvalidNumberOfArgumentsException($"Error: Expected 2 arguments, but received {args.Length}.");
+                _client = args[1];
             }
-
-            for (int i = 0; i < args.Length; i++)
+            else
             {
-                if (string.IsNullOrWhiteSpace(args[i]))
-                {
-                    throw new NullOrWhiteSpaceArgumentException($"Error: Argument '{args[i]}' at index {i} cannot be null or whitespace.");
-                }
+                throw new Exception("Failed to instantiate Delete object.");
             }
-            _client = args[1];
+            
         }
 
         public void Execute()
@@ -44,7 +40,7 @@ namespace Losenordshanterare
         private void PrintSecretKey(byte[] keyArr)
         {
             string base64 = Convert.ToBase64String(keyArr);
-            Console.WriteLine(base64);
+            Console.WriteLine($"Secret Key: {base64}");
         }
     }
 }

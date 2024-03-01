@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 
 namespace Losenordshanterare
@@ -35,7 +36,19 @@ namespace Losenordshanterare
         public static string ReadVaultFromFile(string serverPath)
         {
             string fileContent = File.ReadAllText(serverPath);
-            Dictionary<string, string> jsonData = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
+
+            if (string.IsNullOrEmpty(fileContent))
+            {
+                throw new Exception("Error: Vault string from server is empty.");
+            }
+
+            Dictionary<string, string>? jsonData = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
+
+            if (jsonData == null)
+            {
+                throw new Exception("Error: Vault from server is empty.");
+            }
+
             string base64Vault = jsonData["EncryptedVault"];
             return base64Vault;
         }
@@ -44,7 +57,18 @@ namespace Losenordshanterare
         {
             string fileContent = File.ReadAllText(clientPath);
 
-            Dictionary<string, string> jsonData = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
+            if (string.IsNullOrEmpty(fileContent))
+            {
+                throw new Exception("Error: Secret key string from client is empty.");
+            }
+
+            Dictionary<string, string>? jsonData = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
+
+            if (jsonData == null)
+            {
+                throw new Exception("Error: Vault string from server is empty.");
+            }
+
             string secretBase64 = jsonData["Secret"];
             byte[] secretArr = Convert.FromBase64String(secretBase64);
             SecretKey secretKey = new(secretArr);
@@ -54,7 +78,19 @@ namespace Losenordshanterare
         public static byte[] ReadIVFromFile(string serverPath)
         {
             string fileContent = File.ReadAllText(serverPath);
-            Dictionary<string, string> jsonData = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
+
+            if (string.IsNullOrEmpty(fileContent))
+            {
+                throw new Exception("Error: Secret key string from client is empty.");
+            }
+
+            Dictionary<string, string>? jsonData = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
+
+            if (jsonData == null)
+            {
+                throw new Exception("Error: IV string from server is empty.");
+            }
+
             string encodedIV = jsonData["EncodedIV"];
             byte[] iv = Convert.FromBase64String(encodedIV);
             return iv;

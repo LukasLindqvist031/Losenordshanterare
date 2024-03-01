@@ -10,9 +10,8 @@ namespace Losenordshanterare
 {
     internal static class RandomPasswordGenerator
     {
-        public static string? NewPassword() => GeneratePassword();
 
-        private static string? GeneratePassword()
+        public static string GeneratePassword()
         {
             Random _random = new Random();
             const int passLength = 20;
@@ -41,22 +40,5 @@ namespace Losenordshanterare
             }
             return chars;
         }
-
-        // Bara test för att se vad som sparas, tas bort sen
-
-        //public string GetPassword()
-        //{
-        //    if (_password != null)
-        //    {
-        //        return _password;
-        //    }
-        //    return string.Empty;
-
-        //}
-
-        //public void PrintPassword()
-        //{
-        //    Console.WriteLine(GetPassword());
-        //}
     }
 }

@@ -10,29 +10,23 @@ namespace Losenordshanterare
 {
     internal class Delete : ICommand
     {
-        private readonly string? _client;
-        private readonly string? _server;
-        private readonly string? _property;
-        private string? _masterPassword;
+        private readonly string _client;
+        private readonly string _server;
+        private readonly string _property;
+        private string _masterPassword = string.Empty;
 
         public Delete(string[] args)
         {
-            if (args.Length < 4 || args.Length > 4)
+            if (ValidateArguments.IsValidLengthDelete(args) && ValidateArguments.IsValidArgument(args))
             {
-                throw new InvalidNumberOfArgumentsException($"Error: Expected 4 arguments, but received {args.Length}.");
+                _client = args[1];
+                _server = args[2];
+                _property = args[3];
             }
-
-            for (int i = 0; i < args.Length; i++)
+            else
             {
-                if (string.IsNullOrWhiteSpace(args[i]))
-                {
-                    throw new NullOrWhiteSpaceArgumentException($"Error: Argument '{args[i]}' at index {i} cannot be null or whitespace.");
-                }
+                throw new Exception("Failed to instantiate Delete object.");
             }
-
-            _client = args[1];
-            _server = args[2];
-            _property = args[3];
         }
 
         public void Execute()

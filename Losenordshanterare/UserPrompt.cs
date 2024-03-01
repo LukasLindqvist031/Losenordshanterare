@@ -19,7 +19,7 @@ namespace Losenordshanterare
             {
                 Console.Write(masterPrompt);
                 string? master = Console.ReadLine();
-                inputArr[0] = master;
+                inputArr[0] += master;
             }
             catch (Exception ex)
             {
@@ -34,7 +34,7 @@ namespace Losenordshanterare
             return inputArr;         
         }
 
-        public static string[] PromptUserSet(string? value)
+        public static string[] PromptUserSet()
         {
             const string masterPrompt = "Please enter your master password: ";
             const string valuePrompt = "Please enter the password you want to store: ";
@@ -46,9 +46,9 @@ namespace Losenordshanterare
                 Console.Write(masterPrompt);
                 string? master = Console.ReadLine();
                 Console.Write(valuePrompt);
-                value = Console.ReadLine();
-                inputArr[0] = master;
-                inputArr[1] = value;
+                string? value = Console.ReadLine();
+                inputArr[0] += master;
+                inputArr[1] += value;
             }
             catch (Exception ex)
             {
@@ -65,8 +65,33 @@ namespace Losenordshanterare
 
         public static string[] PromptUserCreate()
         {
+            const string masterPrompt = "Please enter your master password: ";
+            const string secretPrompt = "Please enter the secret key: ";
 
+            string[] inputArr = new string[2];
+
+            try
+            {
+                Console.Write(masterPrompt);
+                string? master = Console.ReadLine();
+                Console.Write(secretPrompt);
+                string? secret = Console.ReadLine();
+                inputArr[0] += master;
+                inputArr[1] += secret;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+
+            if (!IsValidInput(inputArr))
+            {
+                throw new ArgumentException("Input cannot be empty!");
+            }
+
+            return inputArr;
         }
+        
 
         private static bool IsValidInput(string[] args)
         {

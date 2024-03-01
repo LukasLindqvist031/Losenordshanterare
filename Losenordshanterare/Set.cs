@@ -11,41 +11,31 @@ namespace Losenordshanterare
 {
     internal class Set : ICommand
     {
-        private readonly string? _client;
-        private readonly string? _server;
-        private readonly string? _property;
-        private string? _masterPassword;
-        private string? _valuePassword;
+        private readonly string _client;
+        private readonly string _server;
+        private readonly string _property;
+        private string _masterPassword = string.Empty;
+        private string _valuePassword = string.Empty;
 
         public Set(string[] args)
         {
-            if (args.Length < 4 || args.Length > 5)
-            {
-                throw new InvalidNumberOfArgumentsException($"Error: Expected 4 or 5 arguments, but received {args.Length}.");
-            }
-
-            for (int i = 0; i < args.Length; i++)
-            {
-                if (string.IsNullOrWhiteSpace(args[i]))
-                {
-                    throw new NullOrWhiteSpaceArgumentException($"Error: Argument '{args[i]}' at index {i} cannot be null or whitespace.");
-                }
-            }
-
-            if (args.Length == 4)
+            if (args.Length == 4 && ValidateArguments.IsValidLengthSet(args) && ValidateArguments.IsValidArgument(args))
             {
                 _client = args[1];
                 _server = args[2];
                 _property = args[3];
             }
-            else if (args.Length == 5 && IsAutoGenerate(args[4]) == true)
+            else if (args.Length == 5 && IsAutoGenerate(args[4]) == true && ValidateArguments.IsValidLengthSet(args) && ValidateArguments.IsValidArgument(args))
             {
                 _client = args[1];
                 _server = args[2];
                 _property = args[3];
-                _valuePassword = RandomPasswordGenerator.NewPassword();
+                _valuePassword = RandomPasswordGenerator.GeneratePassword();
             }
-
+            else
+            {
+                throw new Exception("Failed to instantiate Set object.");
+            }
         }
 
         public void Execute()

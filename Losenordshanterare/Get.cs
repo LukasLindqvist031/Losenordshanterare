@@ -8,58 +8,56 @@ namespace Losenordshanterare
 {
     internal class Get : ICommand
     {
-        private readonly string? _client;
-        private readonly string? _server;
-        private readonly string? _property;
-        private string? _masterPassword;
+        private readonly string _client;
+        private readonly string _server;
         private readonly int _argsLength;
+        private readonly string _property = string.Empty;
+        private string _masterPassword = string.Empty;
+       
 
         public Get(string[] args)
         {
             _argsLength = args.Length;
 
-            if (args.Length < 3 || args.Length > 4)
-            {
-                throw new InvalidNumberOfArgumentsException($"Error: Expected 3 or 4 arguments, but received {args.Length}.");
-            }
-
-            for (int i = 0; i < args.Length; i++)
-            {
-                if (string.IsNullOrWhiteSpace(args[i]))
-                {
-                    throw new NullOrWhiteSpaceArgumentException($"Error: Argument '{args[i]}' at index {i} cannot be null or whitespace.");
-                }
-            }
-
-            if (args.Length == 3)
+            if (_argsLength == 3 && ValidateArguments.IsValidLengthGet(args) && ValidateArguments.IsValidArgument(args))
             {
                 _client = args[1];
                 _server = args[2];
             }
-
-            if(args.Length == 4)
+            else if (_argsLength == 4 && ValidateArguments.IsValidLengthGet(args) && ValidateArguments.IsValidArgument(args))
             {
                 _client = args[1];
                 _server = args[2];
                 _property = args[3];
             }
+            else
+            {
+                throw new Exception("Failed to instantiate Get object.");
+            }
         }
+        
 
-        private SecretKey GetSecretKey(string clientPath) => FileService.ReadSecretKeyFromFile(clientPath);
 
         public void Execute()
         {
-            string[] inputArr = GetInput();
-            ProcessInput(inputArr);
-            SecretKey secretKey = GetSecretKey(_client);
-            VaultKey vaultKey = new(_masterPassword, secretKey);
-            byte[] iv = FileService.ReadIVFromFile(_server);
-            string base64Vault = FileService.ReadVaultFromFile(_server);
+            try
+            {
+                string[] inputArr = UserInput.GetInput();
+                ProcessInput(inputArr);
+                SecretKey secretKey = FileService.ReadSecretKeyFromFile(_client);
+                VaultKey vaultKey = new VaultKey(_masterPassword, secretKey);
+                byte[] iv = FileService.ReadIVFromFile(_server);
+                string base64Vault = FileService.ReadVaultFromFile(_server);
 
-            
-            Dictionary<string, string> dict = Vault.DecryptVault(base64Vault, vaultKey, iv);
+                Dictionary<string, string> dict = Vault.DecryptVault(base64Vault, vaultKey, iv);
+                Vault vault = new Vault(dict);
 
-            PrintPasswords(dict, _argsLength);
+                PrintPasswords(vault, _property);
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine($"Failed to execute 'get'. Error: {ex.Message}");
+            }
         }
 
         private void ProcessInput(string[] inputArr)
@@ -67,32 +65,18 @@ namespace Losenordshanterare
             _masterPassword = inputArr[0];
         }
 
-        private string[] GetInput()
+        private void PrintPasswords(Vault vault, string property)
         {
-            return UserPrompt.PromptUserSet();
+            if (string.IsNullOrEmpty(property))
+            {
+                vault.PrintProperties();
+            }
+            else
+            {
+                vault.PrintPropAndPass(property);
+            }
+            
         }
 
-        private void PrintPasswords(Dictionary<string, string> propertyPasswordDict, int argsLength)
-        {
-            if (argsLength == 3)
-            {
-                foreach (var pair in propertyPasswordDict)
-                {
-                    Console.WriteLine(pair.Key);
-                }
-            }
-
-            if(argsLength == 4)
-            {
-                if (propertyPasswordDict.TryGetValue(_property, out string password))
-                {
-                    Console.WriteLine($"Password for {_property}: {password}");
-                }
-                else
-                {
-                    Console.WriteLine($"Property {_property} not found.");
-                }
-            }
-        }
     }
 }

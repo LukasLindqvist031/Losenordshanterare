@@ -57,7 +57,7 @@ namespace Losenordshanterare
         {
             if (string.IsNullOrEmpty(valuePassword))
             {
-                return UserPrompt.PromptUserSet(valuePassword);
+                return UserPrompt.PromptUserSet();
             }
             else
             {
@@ -66,6 +66,8 @@ namespace Losenordshanterare
         }
 
         public static string[] GetInput() => UserPrompt.PromptUser();
+
+        public static string[] GetInputCreate() => UserPrompt.PromptUserCreate();
 
     }
 }
