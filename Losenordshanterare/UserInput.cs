@@ -34,10 +34,12 @@ namespace Losenordshanterare
                         set.Execute();
                         break;
                     case "delete":
-                        Console.WriteLine("The command is delete");
+                        Delete delete = new Delete(args);
+                        delete.Execute();
                         break;
                     case "secret":
-                        Console.WriteLine("The command is secret");
+                        Secret secret = new Secret(args);
+                        secret.Execute();
                         break;
                     default:
                         Console.WriteLine($"Error: Invalid operation parameter '{args[0]}'.");
