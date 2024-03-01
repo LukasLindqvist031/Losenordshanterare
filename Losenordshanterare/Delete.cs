@@ -47,7 +47,7 @@ namespace Losenordshanterare
                 vault.DeleteFromVault(_property);
                 string encryptedBase64 = vault.EncryptVault(vaultKey, aes);
                 string base64IV = Convert.ToBase64String(aes.IV);
-                string jsonDict = Converter.ConvertToJson(base64Vault, base64IV);
+                string jsonDict = Converter.ConvertToJson(encryptedBase64, base64IV);
                 FileService.WriteToFile(jsonDict, _server);
             }
             catch (Exception ex)

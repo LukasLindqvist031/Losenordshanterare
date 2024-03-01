@@ -11,10 +11,10 @@ namespace Losenordshanterare
     internal class VaultKey
     {
         private readonly SecretKey _secretKey;
-        private readonly string? _password;
+        private readonly string _password;
         private readonly byte[] _vaultKey;
 
-        public VaultKey(string? password, SecretKey secretKey)
+        public VaultKey(string password, SecretKey secretKey)
         {
             _password = password;
             _secretKey = secretKey;
