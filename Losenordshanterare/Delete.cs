@@ -37,7 +37,7 @@ namespace Losenordshanterare
 
         public void Execute()
         {
-            string[] inputArr = GetInput();
+            string[] inputArr = UserInput.GetInput();
             ProcessInput(inputArr);
             SecretKey secretKey = FileService.ReadSecretKeyFromFile(_client);
             VaultKey vaultKey = new(_masterPassword, secretKey);
@@ -53,8 +53,7 @@ namespace Losenordshanterare
                 vault.DeleteFromVault(_property);
                 string encryptedBase64 = vault.EncryptVault(vaultKey, aes);
                 string base64IV = Convert.ToBase64String(aes.IV);
-                Dictionary<string, string> serverDict = ConvertToDict(encryptedBase64, base64IV);
-                string jsonDict = SerializeDict(serverDict);
+                string jsonDict = Converter.ConvertToJson(base64Vault, base64IV);
                 FileService.WriteToFile(jsonDict, _server);
             }
             catch (Exception ex)
@@ -68,18 +67,6 @@ namespace Losenordshanterare
         {
             _masterPassword = inputArr[0];
         }
-
-        private string[] GetInput() => UserPrompt.PromptUserSet();
-
-        private Dictionary<string, string> ConvertToDict(string vault, string iv)
-        {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            dict["EncodedIV"] = iv;
-            dict["EncryptedVault"] = vault;
-            return dict;
-        }
-
-        private string SerializeDict(Dictionary<string, string> dict) => JsonSerializer.Serialize(dict);
 
     }
 }

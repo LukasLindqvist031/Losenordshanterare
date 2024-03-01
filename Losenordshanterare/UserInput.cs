@@ -53,6 +53,19 @@ namespace Losenordshanterare
 
         }
 
+        public static string[] GetInput(string valuePassword)
+        {
+            if (string.IsNullOrEmpty(valuePassword))
+            {
+                return UserPrompt.PromptUserSet(valuePassword);
+            }
+            else
+            {
+                return UserPrompt.PromptUserSet();
+            }
+        }
+
+        public static string[] GetInput() => UserPrompt.PromptUserSet();
 
     }
 }
