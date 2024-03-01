@@ -50,7 +50,7 @@ namespace Losenordshanterare
 
         public void Execute()
         {
-            string[] inputArr = GetInput();
+            string[] inputArr = UserInput.GetInput(_valuePassword);
             ProcessInput(inputArr);
             SecretKey secretKey = FileService.ReadSecretKeyFromFile(_client);
             VaultKey vaultKey = new(_masterPassword, secretKey);
@@ -66,8 +66,7 @@ namespace Losenordshanterare
                 vault.AddToVault(_property, _valuePassword);
                 string encryptedBase64 = vault.EncryptVault(vaultKey, aes);
                 string base64IV = Convert.ToBase64String(aes.IV);
-                Dictionary<string, string> serverDict = ConvertToDict(encryptedBase64, base64IV);
-                string jsonDict = SerializeDict(serverDict);
+                string jsonDict = Converter.ConvertToJson(encryptedBase64, base64IV);
                 FileService.WriteToFile(jsonDict, _server);
             }
             catch (Exception ex)
@@ -75,31 +74,6 @@ namespace Losenordshanterare
                 Console.WriteLine($"Failed to execute 'set'. Error: {ex.Message}");
             }
 
-        }
-
-        private void ProcessInput(string[] inputArr)
-        {
-            if (inputArr.Length > 1)
-            {
-                _masterPassword = inputArr[0];
-                _valuePassword = inputArr[1];
-            }
-            else
-            {
-                _masterPassword = inputArr[0];
-            }
-        }
-
-        private string[] GetInput()
-        {
-            if (string.IsNullOrEmpty(_valuePassword))
-            {
-                return UserPrompt.PromptUserSet(_valuePassword);
-            }
-            else
-            {
-                return UserPrompt.PromptUserSet();
-            }
         }
 
         private bool IsAutoGenerate(string arg)
@@ -118,15 +92,17 @@ namespace Losenordshanterare
             }
         }
 
-        private Dictionary<string, string> ConvertToDict(string vault, string iv)
+        private void ProcessInput(string[] inputArr)
         {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            dict["EncodedIV"] = iv;
-            dict["EncryptedVault"] = vault;
-            return dict;
+            if (inputArr.Length > 1)
+            {
+                _masterPassword = inputArr[0];
+                _valuePassword = inputArr[1];
+            }
+            else
+            {
+                _masterPassword = inputArr[0];
+            }
         }
-
-        private string SerializeDict(Dictionary<string, string> dict) => JsonSerializer.Serialize(dict);
-
     }
 }

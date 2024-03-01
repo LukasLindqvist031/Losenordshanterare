@@ -46,10 +46,9 @@ namespace Losenordshanterare
         public void Execute()
         {            
             string base64Vault = _vault.EncryptVault(_vaultKey, _aes);
-            string base64IV = ConvertIVToBase64();
-            string jsonSecretKey = ConvertSecretKeyToJson();
-            Dictionary<string, string> dict = ConvertToDict(base64Vault, base64IV);
-            string jsonDict = SerializeDict(dict);
+            string base64IV = Converter.ConvertIVToBase64(_aes.IV);
+            string jsonSecretKey = Converter.ConvertSecretKeyToJson(_secretKey.GetKey);
+            string jsonDict = Converter.ConvertToJson(base64Vault, base64IV);
 
           
             try
@@ -57,7 +56,7 @@ namespace Losenordshanterare
                 FileService.CreateFile(_client);
                 FileService.CreateFile(_server);
                 FileService.WriteToFile(jsonDict, _server); 
-                FileService.WriteToFile(ConvertSecretKeyToJson(), _client); 
+                FileService.WriteToFile(jsonSecretKey, _client); 
             }
             catch (Exception ex)
             {
@@ -65,27 +64,7 @@ namespace Losenordshanterare
             }
         }
 
-        private string ConvertIVToBase64()
-        {
-            string encodedIV = Convert.ToBase64String(_aes.IV);
-            return encodedIV;
-        }
-
-        private string ConvertSecretKeyToJson()
-        {
-            string encodedSecret = Convert.ToBase64String(_secretKey.GetKey);
-            return JsonSerializer.Serialize(new { Secret = encodedSecret });
-        }
-
-        private Dictionary<string, string> ConvertToDict(string vault, string iv)
-        {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            dict["EncodedIV"] = iv;
-            dict["EncryptedVault"] = vault;           
-            return dict;
-        }
-
-        private string SerializeDict(Dictionary<string, string> dict) => JsonSerializer.Serialize(dict);
+    
     }  
     
 }
