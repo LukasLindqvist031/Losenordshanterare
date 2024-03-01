@@ -30,6 +30,18 @@ internal class Vault
         }
     }
 
+    public void DeleteFromVault(string property)
+    {
+        if (!string.IsNullOrWhiteSpace(property))
+        {
+            _logInDict.Remove(property);
+        }
+        else
+        {
+            throw new NullOrWhiteSpaceArgumentException("Property cannot be null or whitespace!");
+        }
+    }
+
     public string EncryptVault(VaultKey vk, Aes aes)
     {
         string jsonDict = SerializeVault();
@@ -47,24 +59,15 @@ internal class Vault
 
     public static Dictionary<string, string> DecryptVault(string vaultBase64, VaultKey vk, byte[] oldIV)
     {
-        byte[] encryptedVault = Base64ToVault(vaultBase64);
-        string decryptedVault = Decrypt(encryptedVault, vk, oldIV);
+        byte[] vaultArr = Base64ToByteArr(vaultBase64);
+        string decryptedVault = Decrypt(vaultArr, vk, oldIV);
         return DeserializeVault(decryptedVault);   
     }
 
     //Used when DecryptVault is called.
     private static Dictionary<string,string> DeserializeVault(string jsonDict) => JsonSerializer.Deserialize<Dictionary<string, string>>(jsonDict);
     private static string Decrypt(byte[] encryptedVault, VaultKey vk, byte[] oldIV) => Encryption.Decrypt(encryptedVault, vk, oldIV);
-    private static byte[] Base64ToVault(string vaultBase64) => Convert.FromBase64String(vaultBase64);
-
-    public void PrintVault()
-    {
-        foreach (KeyValuePair<string, string> kvp in _logInDict)
-        {
-            Console.WriteLine($"Key: {kvp.Key}, Value: {kvp.Value}");
-        }
-    }
-
+    private static byte[] Base64ToByteArr(string vaultBase64) => Convert.FromBase64String(vaultBase64);
 
 
 

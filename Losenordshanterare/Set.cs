@@ -52,7 +52,7 @@ namespace Losenordshanterare
         {
             string[] inputArr = GetInput();
             ProcessInput(inputArr);
-            SecretKey secretKey = GetSecretKey(_client);
+            SecretKey secretKey = FileService.ReadSecretKeyFromFile(_client);
             VaultKey vaultKey = new(_masterPassword, secretKey);
             byte[] iv = FileService.ReadIVFromFile(_server);
             string base64Vault = FileService.ReadVaultFromFile(_server);
@@ -64,8 +64,6 @@ namespace Losenordshanterare
             try
             {
                 vault.AddToVault(_property, _valuePassword);
-                Console.WriteLine("Everything fine so far!");
-                vault.PrintVault();
                 string encryptedBase64 = vault.EncryptVault(vaultKey, aes);
                 string base64IV = Convert.ToBase64String(aes.IV);
                 Dictionary<string, string> serverDict = ConvertToDict(encryptedBase64, base64IV);
@@ -103,12 +101,6 @@ namespace Losenordshanterare
                 return UserPrompt.PromptUserSet();
             }
         }
-
-        private SecretKey GetSecretKey(string clientPath) => FileService.ReadSecretKeyFromFile(clientPath);
-
-
-   
-
 
         private bool IsAutoGenerate(string arg)
         {

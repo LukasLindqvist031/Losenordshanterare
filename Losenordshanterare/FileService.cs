@@ -46,9 +46,9 @@ namespace Losenordshanterare
 
             Dictionary<string, string> jsonData = JsonSerializer.Deserialize<Dictionary<string, string>>(fileContent);
             string secretBase64 = jsonData["Secret"];
-            byte[] secretKey = Convert.FromBase64String(secretBase64);
-            SecretKey secret = new(secretKey);
-            return secret;
+            byte[] secretArr = Convert.FromBase64String(secretBase64);
+            SecretKey secretKey = new(secretArr);
+            return secretKey;
         }
 
         public static byte[] ReadIVFromFile(string serverPath)

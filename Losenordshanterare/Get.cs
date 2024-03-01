@@ -12,7 +12,6 @@ namespace Losenordshanterare
         private readonly string? _server;
         private readonly string? _property;
         private string? _masterPassword;
-        private string? _valuePassword;
         private readonly int _argsLength;
 
         public Get(string[] args)
@@ -24,7 +23,15 @@ namespace Losenordshanterare
                 throw new InvalidNumberOfArgumentsException($"Error: Expected 3 or 4 arguments, but received {args.Length}.");
             }
 
-            if(args.Length == 3)
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (string.IsNullOrWhiteSpace(args[i]))
+                {
+                    throw new NullOrWhiteSpaceArgumentException($"Error: Argument '{args[i]}' at index {i} cannot be null or whitespace.");
+                }
+            }
+
+            if (args.Length == 3)
             {
                 _client = args[1];
                 _server = args[2];
@@ -51,7 +58,6 @@ namespace Losenordshanterare
 
             
             Dictionary<string, string> dict = Vault.DecryptVault(base64Vault, vaultKey, iv);
-            Vault vault = new Vault(dict);
 
             PrintPasswords(dict, _argsLength);
         }
