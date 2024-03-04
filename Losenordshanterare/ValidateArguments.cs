@@ -34,9 +34,9 @@ namespace Losenordshanterare
 
         public static bool IsValidLengthInit(string[] args)
         {
-            if (args.Length != 4)
+            if (args.Length != 3)
             {
-                throw new InvalidNumberOfArgumentsException($"Error: Expected 4 arguments, but received {args.Length}.");
+                throw new InvalidNumberOfArgumentsException($"Error: Expected 3 arguments, but received {args.Length}.");
 
             }
             else
@@ -59,9 +59,9 @@ namespace Losenordshanterare
 
         public static bool IsValidLengthCreate(string[] args)
         {
-            if (args.Length != 4)
+            if (args.Length != 3)
             {
-                throw new InvalidNumberOfArgumentsException($"Error: Expected 4 arguments, but received {args.Length}.");
+                throw new InvalidNumberOfArgumentsException($"Error: Expected 3 arguments, but received {args.Length}.");
             }
             else
             {

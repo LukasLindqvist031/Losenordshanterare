@@ -18,7 +18,7 @@ namespace Losenordshanterare
             }
             else
             {
-                throw new Exception("Failed to instantiate Delete object.");
+                throw new Exception("Failed to instantiate Secret object.");
             }
             
         }
@@ -40,7 +40,7 @@ namespace Losenordshanterare
         private void PrintSecretKey(byte[] keyArr)
         {
             string base64 = Convert.ToBase64String(keyArr);
-            Console.WriteLine($"Secret Key: {base64}");
+            Console.WriteLine(base64);
         }
     }
 }

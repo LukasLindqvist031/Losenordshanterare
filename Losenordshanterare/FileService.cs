@@ -9,6 +9,7 @@ namespace Losenordshanterare
     {
         public static void CreateFile(string path)
         {
+
             try
             {
                 using (FileStream fs = File.Create(path)) { }

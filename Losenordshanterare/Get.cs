@@ -11,8 +11,8 @@ namespace Losenordshanterare
         private readonly string _client;
         private readonly string _server;
         private readonly int _argsLength;
-        private readonly string _property = string.Empty;
-        private string _masterPassword = string.Empty;
+        private readonly string _property;
+        private readonly string _masterPassword;
        
 
         public Get(string[] args)
@@ -23,12 +23,16 @@ namespace Losenordshanterare
             {
                 _client = args[1];
                 _server = args[2];
+                _property = string.Empty;
+                _masterPassword = RetrieveValues.GetMasterPass();
+
             }
             else if (_argsLength == 4 && ValidateArguments.IsValidLengthGet(args) && ValidateArguments.IsValidArgument(args))
             {
                 _client = args[1];
                 _server = args[2];
                 _property = args[3];
+                _masterPassword = RetrieveValues.GetMasterPass();
             }
             else
             {
@@ -42,8 +46,6 @@ namespace Losenordshanterare
         {
             try
             {
-                string[] inputArr = UserInput.GetInput();
-                ProcessInput(inputArr);
                 SecretKey secretKey = FileService.ReadSecretKeyFromFile(_client);
                 VaultKey vaultKey = new VaultKey(_masterPassword, secretKey);
                 byte[] iv = FileService.ReadIVFromFile(_server);
@@ -52,7 +54,7 @@ namespace Losenordshanterare
                 Dictionary<string, string> dict = Vault.DecryptVault(base64Vault, vaultKey, iv);
                 Vault vault = new Vault(dict);
 
-                PrintPasswords(vault, _property);
+                Print(vault, _property);
             }
             catch (Exception ex) 
             {
@@ -60,12 +62,7 @@ namespace Losenordshanterare
             }
         }
 
-        private void ProcessInput(string[] inputArr)
-        {
-            _masterPassword = inputArr[0];
-        }
-
-        private void PrintPasswords(Vault vault, string property)
+        private static void Print(Vault vault, string property)
         {
             if (string.IsNullOrEmpty(property))
             {
@@ -73,10 +70,12 @@ namespace Losenordshanterare
             }
             else
             {
-                vault.PrintPropAndPass(property);
+                vault.PrintPass(property);
             }
             
         }
+
+      
 
     }
 }

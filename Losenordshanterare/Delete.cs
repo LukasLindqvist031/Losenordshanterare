@@ -13,7 +13,7 @@ namespace Losenordshanterare
         private readonly string _client;
         private readonly string _server;
         private readonly string _property;
-        private string _masterPassword = string.Empty;
+        private readonly string _masterPassword;
 
         public Delete(string[] args)
         {
@@ -22,6 +22,7 @@ namespace Losenordshanterare
                 _client = args[1];
                 _server = args[2];
                 _property = args[3];
+                _masterPassword = RetrieveValues.GetMasterPass();
             }
             else
             {
@@ -31,19 +32,17 @@ namespace Losenordshanterare
 
         public void Execute()
         {
-            string[] inputArr = UserInput.GetInput();
-            ProcessInput(inputArr);
-            SecretKey secretKey = FileService.ReadSecretKeyFromFile(_client);
-            VaultKey vaultKey = new(_masterPassword, secretKey);
-            byte[] iv = FileService.ReadIVFromFile(_server);
-            string base64Vault = FileService.ReadVaultFromFile(_server);
-
-            Dictionary<string, string> dict = Vault.DecryptVault(base64Vault, vaultKey, iv);
-            Vault vault = new Vault(dict);
-            Aes aes = Aes.Create();
-
             try
             {
+                SecretKey secretKey = FileService.ReadSecretKeyFromFile(_client);
+                VaultKey vaultKey = new(_masterPassword, secretKey);
+                byte[] iv = FileService.ReadIVFromFile(_server);
+                string base64Vault = FileService.ReadVaultFromFile(_server);
+
+                Dictionary<string, string> dict = Vault.DecryptVault(base64Vault, vaultKey, iv);
+                Vault vault = new Vault(dict);
+                Aes aes = Aes.Create();
+
                 vault.DeleteFromVault(_property);
                 string encryptedBase64 = vault.EncryptVault(vaultKey, aes);
                 string base64IV = Convert.ToBase64String(aes.IV);
@@ -57,10 +56,6 @@ namespace Losenordshanterare
 
         }
 
-        private void ProcessInput(string[] inputArr)
-        {
-            _masterPassword = inputArr[0];
-        }
 
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Losenordshanterare
 {
-    internal static class UserInput
+    internal static class ProcessUserInput
     {
         
         public static void ProcessCommandLine(string[] args)
@@ -53,21 +53,6 @@ namespace Losenordshanterare
 
         }
 
-        public static string[] GetInput(string valuePassword)
-        {
-            if (string.IsNullOrEmpty(valuePassword))
-            {
-                return UserPrompt.PromptUserSet();
-            }
-            else
-            {
-                return UserPrompt.PromptUser();
-            }
-        }
-
-        public static string[] GetInput() => UserPrompt.PromptUser();
-
-        public static string[] GetInputCreate() => UserPrompt.PromptUserCreate();
 
     }
 }
