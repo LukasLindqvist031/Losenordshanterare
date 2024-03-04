@@ -14,16 +14,18 @@ namespace Losenordshanterare
         private readonly string _client;
         private readonly string _server;
         private readonly string _property;
-        private string _masterPassword = string.Empty;
-        private string _valuePassword = string.Empty;
+        private readonly string _masterPassword;
+        private readonly string _valuePassword;
 
         public Set(string[] args)
         {
-            if (args.Length == 4 && ValidateArguments.IsValidLengthSet(args) && ValidateArguments.IsValidArgument(args))
+            if (args.Length == 4 && ValidateArguments.IsValidLengthSet(args) && ValidateArguments.IsValidArgument(args) && !IsAutoGenerate(args[3]))
             {
                 _client = args[1];
                 _server = args[2];
                 _property = args[3];
+                _masterPassword = RetrieveValues.GetMasterPass();
+                _valuePassword = RetrieveValues.GetValuePass();
             }
             else if (args.Length == 5 && IsAutoGenerate(args[4]) == true && ValidateArguments.IsValidLengthSet(args) && ValidateArguments.IsValidArgument(args))
             {
@@ -31,6 +33,7 @@ namespace Losenordshanterare
                 _server = args[2];
                 _property = args[3];
                 _valuePassword = RandomPasswordGenerator.GeneratePassword();
+                _masterPassword = RetrieveValues.GetMasterPass();
             }
             else
             {
@@ -40,19 +43,17 @@ namespace Losenordshanterare
 
         public void Execute()
         {
-            string[] inputArr = UserInput.GetInput(_valuePassword);
-            ProcessInput(inputArr);
-            SecretKey secretKey = FileService.ReadSecretKeyFromFile(_client);
-            VaultKey vaultKey = new(_masterPassword, secretKey);
-            byte[] iv = FileService.ReadIVFromFile(_server);
-            string base64Vault = FileService.ReadVaultFromFile(_server);
-
-            Dictionary<string, string> dict = Vault.DecryptVault(base64Vault, vaultKey, iv);
-            Vault vault = new Vault(dict);
-            Aes aes = Aes.Create();
-
             try
             {
+                SecretKey secretKey = FileService.ReadSecretKeyFromFile(_client);
+                VaultKey vaultKey = new(_masterPassword, secretKey);
+                byte[] iv = FileService.ReadIVFromFile(_server);
+                string base64Vault = FileService.ReadVaultFromFile(_server);
+
+                Dictionary<string, string> dict = Vault.DecryptVault(base64Vault, vaultKey, iv);
+                Vault vault = new Vault(dict);
+                Aes aes = Aes.Create();
+
                 vault.AddToVault(_property, _valuePassword);
                 string encryptedBase64 = vault.EncryptVault(vaultKey, aes);
                 string base64IV = Convert.ToBase64String(aes.IV);
@@ -78,21 +79,10 @@ namespace Losenordshanterare
             }
             else
             {
-                throw new ArgumentException("Incorrect term for auto generated password. Correct terms are '-g' or '--generate'.");
+                return false;
             }
         }
 
-        private void ProcessInput(string[] inputArr)
-        {
-            if (inputArr.Length > 1)
-            {
-                _masterPassword = inputArr[0];
-                _valuePassword = inputArr[1];
-            }
-            else
-            {
-                _masterPassword = inputArr[0];
-            }
-        }
+        
     }
 }

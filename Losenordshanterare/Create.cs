@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using static System.Net.Mime.MediaTypeNames;
+﻿using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-using System.Net.Sockets;
 
 namespace Losenordshanterare
 {
@@ -14,8 +7,8 @@ namespace Losenordshanterare
     {
         private readonly string _client;
         private readonly string _server;
-        private string _masterPassword = string.Empty;
-        private string _secret = string.Empty ;
+        private string _masterPassword;
+        private string _secret;
 
         public Create(string[] args)
         {
@@ -23,6 +16,8 @@ namespace Losenordshanterare
             {
                 _client = args[1];
                 _server = args[2];
+                _masterPassword = RetrieveValues.GetMasterPass();
+                _secret = RetrieveValues.GetSecret();
             }
             else
             {
@@ -32,21 +27,25 @@ namespace Losenordshanterare
 
         public void Execute()
         {
-            string[] inputArr = UserInput.GetInputCreate();
-            ProcessInput(inputArr);
-            string secret = inputArr[1];
-            string trimSecret = RemoveInvalidChars(secret);
-            byte[] arr = Convert.FromBase64String(trimSecret);
-            SecretKey secretKey = new SecretKey(arr);
-            VaultKey vaultKey = new(_masterPassword, secretKey);
-            byte[] iv = FileService.ReadIVFromFile(_server);
-            string base64Vault = FileService.ReadVaultFromFile(_server);
-            string jsonSecret = Converter.ConvertSecretKeyToJson(secretKey.GetKey);
-
-            if (IsValidate(base64Vault, vaultKey, iv))
+            try
             {
-                FileService.CreateFile(_client);
-                FileService.WriteToFile(jsonSecret, _client);
+                string trimSecret = RemoveInvalidChars(_secret);
+                byte[] arr = Convert.FromBase64String(trimSecret);
+                SecretKey secretKey = new SecretKey(arr);
+                VaultKey vaultKey = new(_masterPassword, secretKey);
+                byte[] iv = FileService.ReadIVFromFile(_server);
+                string base64Vault = FileService.ReadVaultFromFile(_server);
+                string jsonSecret = Converter.ConvertSecretKeyToJson(secretKey.GetKey);
+
+                if (IsValidate(base64Vault, vaultKey, iv))
+                {
+                    FileService.CreateFile(_client);
+                    FileService.WriteToFile(jsonSecret, _client);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to execute 'create'. Error: {ex.Message}");
             }
         }
 
@@ -64,11 +63,6 @@ namespace Losenordshanterare
 
         }
 
-        private void ProcessInput(string[] inputArr)
-        {
-             _masterPassword = inputArr[0];
-             _secret = inputArr[1];
-        }
 
         private string RemoveInvalidChars(string input)
         {

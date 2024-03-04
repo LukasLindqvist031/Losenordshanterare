@@ -50,11 +50,11 @@ internal class Vault
         }
     }
 
-    public void PrintPropAndPass(string property)
+    public void PrintPass(string property)
     {
         if(_logInDict.TryGetValue(property, out string? password))
         {
-            Console.WriteLine($"Property: {property}\nPassword: {password}");
+            Console.WriteLine(password);
         }
     }
 

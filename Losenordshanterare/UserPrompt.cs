@@ -9,101 +9,57 @@ namespace Losenordshanterare
 {
     internal static class UserPrompt
     {
-        public static string[] PromptUser()
+        public static string PromptMasterPass()
         {
-            const string masterPrompt = "Please enter your master password: ";
+            const string masterPrompt = "Please enter your master password:";
 
-            string[] inputArr = new string[1];
+            Console.WriteLine(masterPrompt);
+            string? master = Console.ReadLine();
 
-            try
-            {
-                Console.Write(masterPrompt);
-                string? master = Console.ReadLine();
-                inputArr[0] += master;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
-
-            if(!IsValidInput(inputArr))
+            if (string.IsNullOrWhiteSpace(master))
             {
                 throw new ArgumentException("Input cannot be empty!");
             }
-
-            return inputArr;         
+            else
+            {
+                return master;
+            }
         }
 
-        public static string[] PromptUserSet()
+        public static string PromptValuePass()
         {
-            const string masterPrompt = "Please enter your master password: ";
-            const string valuePrompt = "Please enter the password you want to store: ";
+            const string valuePrompt = "Please enter the password you want to store:";
 
-            string[] inputArr = new string[2];
+            Console.WriteLine(valuePrompt);
+            string? value = Console.ReadLine();
 
-            try
-            {
-                Console.Write(masterPrompt);
-                string? master = Console.ReadLine();
-                Console.Write(valuePrompt);
-                string? value = Console.ReadLine();
-                inputArr[0] += master;
-                inputArr[1] += value;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
-
-            if (!IsValidInput(inputArr))
+            if (string.IsNullOrWhiteSpace(value))
             {
                 throw new ArgumentException("Input cannot be empty!");
             }
-
-            return inputArr;
+            else
+            {
+                return value;
+            }
         }
 
-        public static string[] PromptUserCreate()
+        public static string PromptSecret()
         {
-            const string masterPrompt = "Please enter your master password: ";
-            const string secretPrompt = "Please enter the secret key: ";
+            const string secretPrompt = "Please enter the secret key:";
 
-            string[] inputArr = new string[2];
+            Console.WriteLine(secretPrompt);
+            string? secret = Console.ReadLine();
 
-            try
-            {
-                Console.Write(masterPrompt);
-                string? master = Console.ReadLine();
-                Console.Write(secretPrompt);
-                string? secret = Console.ReadLine();
-                inputArr[0] += master;
-                inputArr[1] += secret;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
-
-            if (!IsValidInput(inputArr))
+            if (string.IsNullOrWhiteSpace(secret))
             {
                 throw new ArgumentException("Input cannot be empty!");
             }
-
-            return inputArr;
+            else
+            {
+                return secret;
+            }
         }
         
-
-        private static bool IsValidInput(string[] args)
-        {
-            foreach (string arg in args)
-            {
-                if(string.IsNullOrWhiteSpace(arg))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
 
     }
 }
