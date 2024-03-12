@@ -37,7 +37,7 @@ namespace Losenordshanterare
                 string base64Vault = FileService.ReadVaultFromFile(_server);
                 string jsonSecret = Converter.ConvertSecretKeyToJson(secretKey.GetKey);
 
-                if (IsValidate(base64Vault, vaultKey, iv))
+                if (IsDecrypted(base64Vault, vaultKey, iv))
                 {
                     FileService.CreateFile(_client);
                     FileService.WriteToFile(jsonSecret, _client);
@@ -49,7 +49,7 @@ namespace Losenordshanterare
             }
         }
 
-        public bool IsValidate(string base64Vault, VaultKey vaultKey, byte[] iv)
+        public static bool IsDecrypted(string base64Vault, VaultKey vaultKey, byte[] iv)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace Losenordshanterare
         }
 
 
-        private string RemoveInvalidChars(string input)
+        private static string RemoveInvalidChars(string input)
         {
             Regex regex = new Regex(@"^[\w/\:.-]+;base64,");
             return regex.Replace(input, string.Empty);
