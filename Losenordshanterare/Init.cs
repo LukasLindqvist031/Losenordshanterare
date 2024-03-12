@@ -26,7 +26,7 @@ namespace Losenordshanterare
             {
                 _client = args[1];
                 _server = args[2];
-                _masterPass = RetrieveValues.GetMasterPass();
+                _masterPass = RetrieveUserValues.GetMasterPass();
                 _secretKey = new SecretKey();
                 _vaultKey = new VaultKey(_masterPass, _secretKey);
                 _aes = Aes.Create();

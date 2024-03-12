@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Losenordshanterare
 {
-    internal static class RetrieveValues
+    internal static class RetrieveUserValues
     {
         public static string GetMasterPass()
         {

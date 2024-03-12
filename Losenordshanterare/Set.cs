@@ -24,8 +24,8 @@ namespace Losenordshanterare
                 _client = args[1];
                 _server = args[2];
                 _property = args[3];
-                _masterPassword = RetrieveValues.GetMasterPass();
-                _valuePassword = RetrieveValues.GetValuePass();
+                _masterPassword = RetrieveUserValues.GetMasterPass();
+                _valuePassword = RetrieveUserValues.GetValuePass();
             }
             else if (args.Length == 5 && IsAutoGenerate(args[4]) == true && ValidateArguments.IsValidLengthSet(args) && ValidateArguments.IsValidArgument(args))
             {
@@ -33,7 +33,7 @@ namespace Losenordshanterare
                 _server = args[2];
                 _property = args[3];
                 _valuePassword = RandomPasswordGenerator.GeneratePassword();
-                _masterPassword = RetrieveValues.GetMasterPass();
+                _masterPassword = RetrieveUserValues.GetMasterPass();
             }
             else
             {
