@@ -18,7 +18,7 @@ namespace Losenordshanterare
             }
             else
             {
-                throw new Exception("Failed to instantiate Secret object.");
+                throw new Exception("Failed to instantiate secret.");
             }
             
         }

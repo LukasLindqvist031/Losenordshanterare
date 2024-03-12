@@ -36,7 +36,7 @@ namespace Losenordshanterare
             }
             else
             {
-                throw new Exception("Failed to instantiate Get object.");
+                throw new Exception("Failed to instantiate get.");
             }
         }
         

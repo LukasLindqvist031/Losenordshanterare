@@ -21,7 +21,7 @@ namespace Losenordshanterare
             }
             else
             {
-                throw new Exception("Failed to instantiate Create object.");
+                throw new Exception("Failed to instantiate create.");
             }
         }
 

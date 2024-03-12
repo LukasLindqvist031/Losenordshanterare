@@ -26,7 +26,7 @@ namespace Losenordshanterare
             }
             else
             {
-                throw new Exception("Failed to instantiate Delete object.");
+                throw new Exception("Failed to instantiate delete.");
             }
         }
 

@@ -37,7 +37,7 @@ namespace Losenordshanterare
             }
             else
             {
-                throw new Exception("Failed to instantiate Set object.");
+                throw new Exception("Failed to instantiate set.");
             }
         }
 

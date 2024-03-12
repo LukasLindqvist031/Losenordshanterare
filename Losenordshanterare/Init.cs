@@ -34,7 +34,7 @@ namespace Losenordshanterare
             }
             else
             {
-                throw new Exception("Failed to instantiate Init object.");
+                throw new Exception("Failed to instantiate init.");
             }
         }
 
