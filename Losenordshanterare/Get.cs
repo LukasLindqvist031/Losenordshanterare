@@ -24,7 +24,7 @@ namespace Losenordshanterare
                 _client = args[1];
                 _server = args[2];
                 _property = string.Empty;
-                _masterPassword = RetrieveValues.GetMasterPass();
+                _masterPassword = RetrieveUserValues.GetMasterPass();
 
             }
             else if (_argsLength == 4 && ValidateArguments.IsValidLengthGet(args) && ValidateArguments.IsValidArgument(args))
@@ -32,7 +32,7 @@ namespace Losenordshanterare
                 _client = args[1];
                 _server = args[2];
                 _property = args[3];
-                _masterPassword = RetrieveValues.GetMasterPass();
+                _masterPassword = RetrieveUserValues.GetMasterPass();
             }
             else
             {

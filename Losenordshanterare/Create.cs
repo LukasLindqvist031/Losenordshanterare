@@ -16,8 +16,8 @@ namespace Losenordshanterare
             {
                 _client = args[1];
                 _server = args[2];
-                _masterPassword = RetrieveValues.GetMasterPass();
-                _secret = RetrieveValues.GetSecret();
+                _masterPassword = RetrieveUserValues.GetMasterPass();
+                _secret = RetrieveUserValues.GetSecret();
             }
             else
             {

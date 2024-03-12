@@ -22,7 +22,7 @@ namespace Losenordshanterare
                 _client = args[1];
                 _server = args[2];
                 _property = args[3];
-                _masterPassword = RetrieveValues.GetMasterPass();
+                _masterPassword = RetrieveUserValues.GetMasterPass();
             }
             else
             {
