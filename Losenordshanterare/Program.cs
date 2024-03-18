@@ -8,7 +8,7 @@ namespace Losenordshanterare
         {
             if (args.Length > 0)
             {
-                ProcessUserInput.ProcessCommandLine(args);
+                ProcessCommandLine.ProcessFirstArgument(args);
             }
 
         }

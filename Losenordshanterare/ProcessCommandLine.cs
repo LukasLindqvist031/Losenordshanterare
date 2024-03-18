@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Losenordshanterare
 {
-    internal static class ProcessUserInput
+    internal static class ProcessCommandLine
     {
         
-        public static void ProcessCommandLine(string[] args)
+        public static void ProcessFirstArgument(string[] args)
         {
             string argument = args[0];
 
